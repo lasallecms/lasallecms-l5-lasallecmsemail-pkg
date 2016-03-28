@@ -65,7 +65,7 @@
 Route::group(array('prefix' => 'email'), function() {
     Route::get('inboundget', 'EmailController@inboundget');
 
-    //Route::post('inboundpost', 'EmailController@inboundpost');
+    Route::post('inboundpost', 'EmailController@inboundpost');
 });
 
 
