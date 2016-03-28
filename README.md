@@ -12,6 +12,11 @@
 Email handler for LaSalle Software, with heavy integration with LaSalleCRM
 
 
+## Early Development
+
+This package is in early development. 
+
+
 ## Security
 
 If you discover any security related issues, please email Bob Bloom at "info at southlasalle dot com" instead of using the issue tracker.

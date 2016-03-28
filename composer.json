@@ -1,5 +1,5 @@
 {
-    "name": "lasallecms/lasallecrmemail",
+    "name": "lasallecrm/lasallecrmemail",
     "description": "Email handling for LaSalle Software.",
     "homepage": "http://LaSalleSoftware.com",
     "keywords": ["laravel", "laravel5", "email", "LaSalleCRM", "LaSalleCMS", "South LaSalle", "Bob Bloom"],
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lasallecms\\Lasallecrmemail\\": "src/"
+            "Lasallecrm\\Lasallecrmemail\\": "src/"
         }
     },
     "minimum-stability": "dev"
