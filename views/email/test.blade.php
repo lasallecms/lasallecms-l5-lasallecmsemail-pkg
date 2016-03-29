@@ -1,4 +1,4 @@
-@foreach ($vars as $key=>$value)
+@foreach ($vars as $key => $value)
     <hr>
-    key = {{{ $key  }}} and value = {{{ $value  }}}
+    {!! $key !!} = {!! $value !!}
 @endforeach
