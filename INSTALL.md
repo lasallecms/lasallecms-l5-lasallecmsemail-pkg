@@ -54,6 +54,19 @@ php artisan migrate
 * second: run "vendor:publish" (once for all packages) 
 * third:  run "migrate" (once for all packages)
 
+## Nginx Note
+
+The Digital Ocean nginx client_max_body_size default is 1m. This is too small to receive incoming emails from Mailgun, etc, especially when receiving attachments. So add this to your /etc/nginx/nginx.conf. I did not modify any php.ini.
+
+```
+       ##
+       # increase client_max_body_size
+       # https://easyengine.io/tutorials/php/increase-file-upload-size-limit/  (Bob Mar2016)
+       ##
+
+       client_max_body_size 20m;
+```
+
 
 ## Serious Caveat 
 
