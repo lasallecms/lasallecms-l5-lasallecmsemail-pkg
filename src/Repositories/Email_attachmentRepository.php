@@ -1,6 +1,6 @@
 <?php
 
-namespace Lasallecrm\Lasallecrmemail\Http\Controllers;
+namespace Lasallecrm\Lasallecrmemail\Repositories;
 
 /**
  *
@@ -33,45 +33,38 @@ namespace Lasallecrm\Lasallecrmemail\Http\Controllers;
  *
  */
 
-// Laravel facades
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Mail;
-
-// Laravel classes
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
-
+// LaSalle Software
+use Lasallecms\Lasallecmsapi\Repositories\BaseRepository;
+use Lasallecrm\Lasallecrmemail\Models\Email_attachment;
 
 /**
- * Class EmailController
- * @package Lasallecrm\Lasallecrmemail\Controllers
+ * Class Email_attachmentRepository
+ * @package Lasallecrm\Lasallecrmemail\Repository
  */
-class EmailController extends Controller
+class Email_attachmentRepository extends BaseRepository
 {
-    public function inboundget() {
-		return "<h1>Hello inboundget!</h1>";
-	}
+    /**
+     * Instance of model
+     *
+     * @var Lasallecrm\Lasallecrmemail\Models\Email_attachment
+     */
+    protected $model;
 
 
-// http://stackoverflow.com/questions/24605291/retrieve-attachment-from-mailgun-form-post-php
-    public function inboundpost(Request $request) {
-
-        $vars = $request->all();
-
-        $data = [];
-        $data['subject'] = "MAILGUN ROUTE";
-        $data['to']      = "krugerbloom@gmail.com";
-
-        $emailBladeFile = 'lasallecrmemail::email.test';
-
-        Mail::queue($emailBladeFile, ['vars' => $vars], function ($message) use ($data) {
-            $message->subject($data['subject'])
-                ->to($data['to'])
-            ;
-        });
-
-        return;
+    /**
+     * Inject the model
+     *
+     * @param  Lasallecms\Lasallecrmemail\Models\Email_attachment
+     */
+    public function __construct(Email_attachment $model) {
+        $this->model = $model;
     }
 
+    /**
+     * @param  int   $id    ID for the email messages table
+     * @return mixed
+     */
+    public function  getEmailAttachmentsForAdminShow($id) {
+        return $this->model->where('email_messages_id', $id)->get();
+    }
 }

@@ -30,7 +30,8 @@ Lasallecrm\Lasallecrmemail\LasallecrmemailEventServiceProvider::class,
 
 
 ## Dependencies
-* none
+* Need the usual LaSalle Software packages installed
+* INSTALL THE TO-DO PACKAGE! Uses the status lookup table from the to-do package [To-Do package](https://github.com/lasallecrm/lasallecrm-l5-todo-pkg/blob/master/database/migrations/2015_05_28_todo_create_todo_tables.php)
 
 
 ## Publish the Package's Config

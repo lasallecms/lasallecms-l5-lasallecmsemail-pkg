@@ -17,6 +17,11 @@ Email handler for LaSalle Software, with heavy integration with LaSalleCRM
 This package is in early development. 
 
 
+## Not Use Admin Form Automation
+
+Email handling is a specialized thing, so I am foregoing my own Administrative Form Automation. 
+
+
 ## Security
 
 If you discover any security related issues, please email Bob Bloom at "info at southlasalle dot com" instead of using the issue tracker.

@@ -63,9 +63,19 @@
 */
 
 Route::group(array('prefix' => 'email'), function() {
-    Route::get('inboundget', 'EmailController@inboundget');
 
-    Route::post('inboundpost', 'EmailController@inboundpost');
+    Route::get('inboundget', 'LelyController@inboundget');
+    Route::post('inboundpost', 'LelyController@inboundpost');
+});
+
+
+Route::group(array('prefix' => 'admin'), function()
+{
+    // Email Messages
+    Route::resource('emailhandling', 'AdminEmailHandlingController');
+    Route::post('emailhandling/confirmDeletion/{id}', 'AdminEmailHandlingController@confirmDeletion');
+    Route::post('emailhandling/confirmDeletionMultipleRows', 'AdminEmailHandlingController@confirmDeletionMultipleRows');
+    Route::post('emailhandling/destroyMultipleRecords', 'AdminEmailHandlingController@destroyMultipleRecords');
 });
 
 
