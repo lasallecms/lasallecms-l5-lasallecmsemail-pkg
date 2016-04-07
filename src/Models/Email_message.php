@@ -122,6 +122,29 @@ class Email_message extends BaseModel
     public $resource_route_name   = "emailhandling";
 
 
+    // FORM PROCESSORS PROPERTIES.
+    // THESE ARE THE ADMIN CRUD COMMAND HANDLERS.
+    // THE ONLY REASON YOU HAVE TO CREATE THESE COMMAND HANDLERS AT ALL IS THAT
+    // THE EVENTS DIFFER. EVERYTHING THAT HAPPENS UP TO THE "PERSIST" IS PRETTY STANDARD.
+
+    /*
+     * Namespace of the Form Processors
+     *
+     * MUST *NOT* have a slash at the end of the string
+     *
+     * @var string
+     */
+    public $namespace_formprocessor = 'Lasallecrm\Lasallecrmemail\Processing';
+
+    /*
+     * Namespace and class name of the DELETE (DESTROY) Form Processor command
+     *
+     * @var string
+     */
+    public $classname_formprocessor_delete = 'DeleteEmail_messageFormProcessing';
+
+
+
     // USER GROUPS & ROLES PROPERTIES
 
     /**
@@ -136,6 +159,34 @@ class Email_message extends BaseModel
         ['edit'    => ['Super Administrator']],
         ['update'  => ['Super Administrator']],
         ['destroy' => ['Super Administrator']],
+    ];
+
+
+    // FIELD LIST PROPERTIES
+
+    /*
+     * Field list
+     *
+     * ID and TITLE must go first.
+     *
+     * Forms will list fields in the order fields are listed in this array.
+     *
+     * HERE FOR THE EXPRESS PURPOSE OF MAKING THE DELETION WORK
+     * https://github.com/lasallecms/lasallecms-l5-lasallecmsapi-pkg/blob/579412dbc44f498f00d78184d5c69dc75372fcab/src/Repositories/Traits/Persist.php::destroyRecord($id)
+     *
+     * BASICALLY, A BLANK ARRAY ON PURPOSE!
+     * THE DELETION DOES NOT DELETE ATTACHMENT RECORDS NOR ATTACHMENT FILES
+     *
+     * @var array
+     */
+    public $field_list = [
+            [
+            'name'                  => 'id',
+            'type'                  => 'int',
+            'info'                  => false,
+            'index_skip'            => false,
+            'index_align'           => 'center',
+        ],
     ];
 
 

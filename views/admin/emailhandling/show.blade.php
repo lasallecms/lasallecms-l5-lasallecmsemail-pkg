@@ -45,7 +45,7 @@
                         </td>
                         <td>
                             @if ($record->from_name)
-                                {{{ $record->from_name }}} <{{{ $record->from_email_address }}}>
+                                {{{ $record->from_name }}} ({{{ $record->from_email_address }}})
                             @else
                                 {{{ $record->from_email_address }}}
                             @endif
@@ -58,7 +58,7 @@
                         </td>
                         <td>
                             @if ($record->to_name)
-                                {{{ $record->to_name }}} <{{{ $record->to_email_address }}}>
+                                {{{ $record->to_name }}} ({{{ $record->to_email_address }}})
                             @else
                                 {{{ $record->to_email_address }}}
                             @endif

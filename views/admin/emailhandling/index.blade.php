@@ -44,7 +44,6 @@
                                 {{-- The checkbox --> the primary ID field is always the first field. --}}
                                 <th style="text-align: center;"></th>
 
-                                <th style="text-align: center;">ID</th>
                                 <th style="text-align: center;">From</th>
                                 <th style="text-align: center;">To</th>
                                 <th style="text-align: center;">Subject</th>
@@ -65,9 +64,27 @@
 
                                     <tr>
                                         <td align="center"><input name="checkbox[]" type="checkbox" value="{!! $record->id !!}"></td>
-                                        <td align="center">{!! $record->id !!}</td>
-                                        <td align="left">{!! $record->from_email_address !!}</td>
-                                        <td align="left">{!! $record->to_email_address !!}</td>
+
+                                        <td align="left">
+                                            @if ($record->from_name)
+                                                {!! $record->from_name !!}
+                                                <br />
+                                                ({!! $record->from_email_address !!})
+                                            @else
+                                                {!! $record->from_email_address !!}
+                                            @endif
+                                        </td>
+
+                                        <td align="left">
+                                            @if ($record->to_name)
+                                                {!! $record->to_name !!}
+                                                <br />
+                                                ({!! $record->to_email_address !!})
+                                            @else
+                                                {!! $record->to_email_address !!}
+                                            @endif
+                                        </td>
+
                                         <td align="left">{!! $record->subject !!}</td>
                                         <td align="center">{!! $HTMLHelper::convertToCheckOrXBootstrapButtons($record->sent) !!}</td>
                                         <td align="center">{!! $HTMLHelper::convertToCheckOrXBootstrapButtons($record->read) !!}</td>
@@ -82,11 +99,9 @@
 
                                         {{-- EDIT BUTTON --}}
                                         <td align="center">
-                                            @if (!$record->sent)
                                                 <a href="{{{ URL::route('admin.'.$resource_route_name.'.edit', $record->id) }}}" class="btn btn-success  btn-xs" role="button">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                            @endif
                                         </td>
 
                                         {{-- DELETE BUTTON --}}
@@ -116,6 +131,11 @@
                             <i class="fa fa-times icon-2x"></i> Delete the checked rows
                         </button>
 
+
+
+                        <br /><br /><br />
+                        <button class="btn btn-warning text-center"><strong>Please note that deleting an email does not delete its attachments. Future feature!</strong></button>
+
                         @else
                             <br /><br />
                             <h2>
@@ -123,6 +143,7 @@
                             </h2>
 
                             <br />
+                            {!! $HTMLHelper::adminCreateButton($resource_route_name, $model_class, 'left') !!}
                 @endif
 
 
