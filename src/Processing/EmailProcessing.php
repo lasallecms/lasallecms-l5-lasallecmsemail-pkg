@@ -44,6 +44,8 @@ use Illuminate\Http\Request;
 
 // Laravel facades
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 // Third party classes
@@ -63,11 +65,27 @@ class EmailProcessing
      */
     protected $request;
 
+    /**
+     * @var Lasallecrm\Lasallecrmemail\Models\Email_message
+     */
+    protected $email_message;
 
-    public function __construct(Request $request) {
-        $this->request = $request;
+
+    /**
+     * EmailProcessing constructor.
+     * @param Request $request
+     * @param Email_message $email_message
+     */
+    public function __construct(Request $request, Email_message $email_message) {
+        $this->request       = $request;
+        $this->email_message = $email_message;
     }
 
+
+
+    ///////////////////////////////////////////////////////////////////
+    ///////     CREATE EMAIL_MESSAGES RECORD                      /////
+    ///////////////////////////////////////////////////////////////////
 
     /**
      * Wash the create form's input fields
@@ -127,4 +145,130 @@ class EmailProcessing
 
         return $data;
     }
+
+
+
+    ///////////////////////////////////////////////////////////////////
+    ///////          UPDATE EMAIL_MESSAGES RECORD                 /////
+    ///////////////////////////////////////////////////////////////////
+
+    // Update requires exact same washing as washCreateForm($data),
+    // so no need for washUpdateForm($data)
+
+    // Update requires exact same validation as validateCreateForm($data),
+    // so no need for validateUpdateForm($data)
+
+    /**
+     * Populate the rest of the fields required to INSERT a new email_messages record
+     *
+     * @param  array  $data
+     * @return array
+     */
+    public function populateUpdateFields($data) {
+
+        $data['id']                 = $this->request->input('id');
+        $data['user_id']            = $this->request->input('user_id');
+        $data['priority_id']        = $this->request->input('priority_id');
+
+
+        if (isset($data['from_email_address'])) {
+            $data['from_email_address'] = $this->request->input('from_email_address');
+        }
+
+        if (isset($data['from_name'])) {
+            $data['from_name']          = $this->request->input('from_name');
+        }
+
+        if (isset($data['to_email_address'])) {
+            $data['to_email_address']   = $this->request->input('to_email_address');
+        }
+
+        if (isset($data['to_name'] )) {
+            $data['to_name']            = $this->request->input('to_name');
+        }
+
+
+        $data['priority_id']        = $this->request->input('priority_id');
+        $data['archived']           = $this->request->input('archived');
+        $data['updated_at']         = Carbon::now();
+        $data['updated_by']         = Auth::user()->id;
+
+        return $data;
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////
+    ///////          SEND THE EMAIL MESSAGE                       /////
+    ///////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Send the email
+     *
+     * It is assumed that the email resides in the "email_messages" database table.
+     *
+     * @param  int   $id   The "email_messages" table's ID field
+     * @return void
+     */
+    public function sendEmail($id) {
+
+        // Prep the email
+        $data = $this->prepEmailData($id);
+
+        // What blade file to use?
+        $emailBladeFile = 'lasallecrmemail::email.send_email';
+
+        // Send da email
+        Mail::queue($emailBladeFile, ['data' => $data], function ($message) use ($data) {
+
+            $message->from($data['from_email_address'], $data['from_name']);
+
+
+            // sender" substitute a custom address of the sender at send time
+            // http://swiftmailer.org/docs/sending.html
+            $message->sender($data['sender_email_address'], $data['site_name']);
+
+            $message->to($data['to_email_address'] , $data['to_email_address']);
+
+            //$message->cc($address, $name = null);
+            //$message->bcc($address, $name = null)
+
+            $message->replyTo($data['from_email_address'], $data['from_name']) ;
+
+            $message->subject($data['subject']);
+
+            //$message->attach($file, array $options = []);
+
+        });
+
+    }
+
+    /**
+     * Prepare the email
+     *
+     * @param  int   $id   The "email_messages" table's ID field
+     * @return array
+     */
+    public function prepEmailData($id) {
+
+        $email = $this->email_message->find($id);
+
+        // Build the email data
+        // $data is an array
+        $data = [];
+        $data['from_name']            = $email->from_name;
+        $data['from_email_address']   = $email->from_email_address;
+        $data['to_name']              = $email->to_name;
+        $data['to_email_address']     = $email->to_email_address;
+        $data['subject']              = $email->subject;
+        $data['body']                 = $email->body;
+        $data['site_name']            = config('lasallecmsfrontend.site_name');
+        $data['sender_email_address'] = "info@southlasalle.com";
+
+        return $data;
+    }
+
+
+
 }

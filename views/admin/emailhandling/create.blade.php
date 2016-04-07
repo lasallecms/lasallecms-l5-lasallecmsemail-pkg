@@ -102,7 +102,7 @@
                             <label for="body">Body: </label>
                         </td>
                         <td>
-                            <textarea name="body" id="body}" required placeholder="Enter a message (no HTML)" columns="9">{{{ old('body') }}}</textarea> *
+                            <textarea name="body" id="body" required placeholder="Enter a message (no HTML)" columns="9">{{{ old('body') }}}</textarea> *
                         </td>
                     </tr>
 

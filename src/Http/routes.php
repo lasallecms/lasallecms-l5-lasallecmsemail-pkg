@@ -62,6 +62,7 @@
 |
 */
 
+// Front end routes
 Route::group(array('prefix' => 'email'), function() {
 
     Route::get('inboundget', 'LelyController@inboundget');
@@ -69,6 +70,7 @@ Route::group(array('prefix' => 'email'), function() {
 });
 
 
+// Admin routes
 Route::group(array('prefix' => 'admin'), function()
 {
     // Email Messages

@@ -64,7 +64,7 @@ class Email_message extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'user_id', 'status_id', 'from', 'to', 'subject', 'body', 'read', 'archived',
+        'user_id', 'priority_id', 'from_name', 'from_email_address', 'to_name', 'to_email_address', 'subject', 'body', 'read', 'archived',
     ];
 
     /**
@@ -187,6 +187,26 @@ class Email_message extends BaseModel
             'index_skip'            => false,
             'index_align'           => 'center',
         ],
+    ];
+
+    /**
+     * Big help to have this specific field define thusly.
+     *
+     * @var array
+     */
+    public $priorityIdField = [
+        'name'                  => 'priority_id',
+        'alternate_form_name'   => 'Priority',
+        'type'                  => 'related_table',
+        'related_table_name'    => 'lookup_todo_priority_types',
+        'related_namespace'     => 'Lasallecrm\Todo\Models',
+        'related_model_class'   => 'Lookup_todo_priority_type',
+        'related_fk_constraint' => false,
+        'related_pivot_table'   => false,
+        'nullable'              => true,
+        'info'                  => 'Optional.',
+        'index_skip'            => false,
+        'index_align'           => 'center',
     ];
 
 

@@ -56,6 +56,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
+// Third party classes
+use Collective\Html\FormFacade as Form;
+
 
 /**
  *
@@ -183,16 +186,16 @@ class AdminEmailHandlingController extends AdminFormBaseController
 
         return view('lasallecrmemail::admin/emailhandling/create',
         [
-            'user'                         => Auth::user(),
-            'repository'                   => $this->repository,
-            'package_title'                => $this->model->package_title,
-            'table_name'                   => $this->model->table,
-            'model_class'                  => $this->model->model_class,
-            'resource_route_name'          => $this->model->resource_route_name,
-            'DatesHelper'                  => DatesHelper::class,
-            'HTMLHelper'                   => HTMLHelper::class,
-            'Config'                       => Config::class,
-            'admin_template_name'          => config('lasallecmsadmin.admin_template_name'),
+            'user'                             => Auth::user(),
+            'repository'                       => $this->repository,
+            'package_title'                    => $this->model->package_title,
+            'table_name'                       => $this->model->table,
+            'model_class'                      => $this->model->model_class,
+            'resource_route_name'              => $this->model->resource_route_name,
+            'DatesHelper'                      => DatesHelper::class,
+            'HTMLHelper'                       => HTMLHelper::class,
+            'Config'                           => Config::class,
+            'admin_template_name'              => config('lasallecmsadmin.admin_template_name'),
         ]);
     }
 
@@ -220,15 +223,39 @@ class AdminEmailHandlingController extends AdminFormBaseController
         }
 
         // Populate the fields
+        // $data is an array
         $data = $this->emailProcessing->populateCreateFields($data);
 
         // INSERT the record
         $savedOk = $this->repository->insertNewRecord($data);
 
-        // Assuming the INSERT succeeded !
-        $message =  "You successfully created your new email message!";
-        Session::flash('message', $message);
-        Session::flash('status_code', '200' );
+        $message     =  "You successfully created your new email message!";
+
+        if ($request->input('send_email') == "Save & Send") {
+            $message = "You successfully updated, and sent, your email message!";
+        }
+
+        $status_code = 200;
+
+        if (!$savedOk) {
+            $message     =  "There was a problem saving your new email message!";
+            $status_code = 400;
+        }
+
+        Session::flash('message',     $message);
+        Session::flash('status_code', $status_code );
+
+        if (!$savedOk) {
+            return redirect('admin/emailhandling/create')
+                ->withInput()
+            ;
+        }
+
+        if ($request->input('send_email') == "Save & Send") {
+
+            // send the email
+            $this->emailProcessing->sendEmail($data);
+        }
 
         return Redirect::route('admin.emailhandling.index');
     }
@@ -237,8 +264,8 @@ class AdminEmailHandlingController extends AdminFormBaseController
      * Display the specified record
      * GET /admin/emailhandling/{id}
      *
-     * @param  int  $id
-     * @return Response
+     * @param   int       $id
+     * @return  Response
      */
     public function show($id) {
 
@@ -259,5 +286,139 @@ class AdminEmailHandlingController extends AdminFormBaseController
                 'Config'                       => Config::class,
                 'admin_template_name'          => config('lasallecmsadmin.admin_template_name'),
             ]);
+    }
+
+    /**
+     * Display the edit form
+     * GET /admin/emailhandling/edit/{id}
+     *
+     * @param   int       $id
+     * @return  Response
+     */
+    public function edit($id) {
+
+        // Is this user allowed to do this?
+        if (!$this->repository->isUserAllowed('edit')) {
+            Session::flash('status_code', 400 );
+            $message = "You are not allowed to edit ".$this->model->table;
+            Session::flash('message', $message);
+            return view('formhandling::warnings/' . config('lasallecmsadmin.admin_template_name') . '/user_not_allowed', [
+                'package_title'                => $this->model->package_title,
+                'table_type_plural'            => $this->model->table,
+                'resource_route_name'          => $this->model->resource_route_name,
+                'table_type_singular'          => strtolower($this->model->model_class),
+                'HTMLHelper'                   => HTMLHelper::class,
+            ]);
+        }
+
+        // Is this record locked?
+        if ($this->repository->isLocked($id)) {
+
+            $modelClass = HTMLHelper::properPlural($this->model->model_class);
+
+            $message    = "This ".$modelClass." is not available for editing, as someone else is currently editing this ".$modelClass.".";
+            Session::flash('message', $message);
+            Session::flash('status_code', 400 );
+            return Redirect::route('admin.'.$this->model->resource_route_name.'.index');
+        }
+
+        // Lock the record
+        $this->repository->populateLockFields($id);
+
+        return view('lasallecrmemail::admin/emailhandling/edit',
+            [
+                'user'                         => Auth::user(),
+                'repository'                   => $this->repository,
+                'record'                       => $this->repository->getFind($id),
+                'package_title'                => $this->model->package_title,
+                'table_name'                   => $this->model->table,
+                'model_class'                  => $this->model->model_class,
+                'resource_route_name'          => $this->model->resource_route_name,
+                'priorityIdField'              => $this->model->priorityIdField,
+                'DatesHelper'                  => DatesHelper::class,
+                'HTMLHelper'                   => HTMLHelper::class,
+                'Config'                       => Config::class,
+                'admin_size_input_text_box'    => Config::get('lasallecmsadmin.admin_size_input_text_box'),
+                'admin_template_name'          => config('lasallecmsadmin.admin_template_name'),
+                'Form'                         => Form::class,
+            ]);
+    }
+
+
+    /**
+     * Update an existing resource in storage
+     * POST admin/emailhandling/update
+     *
+     * @param  Request   $request
+     * @return Response
+     */
+    public function update(Request $request) {
+
+        // Mark this email as read
+        $this->repository->markEmailAsRead($request->input('id'));
+
+        // Get a washed array of the create form's input fields
+        $data = $this->emailProcessing->washCreateForm($request);
+
+        // Validate the create form's input fields
+        $validator = $this->emailProcessing->validateCreateForm($data);
+
+        // Did validate pass or fail?
+        if ($validator->fails()) {
+
+            // unlock the record
+            $this->repository->unpopulateLockFields($request->input('id'));
+
+            return redirect('admin/emailhandling/'.$request->input('id').'/edit')
+                ->withErrors($validator)
+                ->withInput()
+            ;
+        }
+
+        // Populate the fields
+        $data = $this->emailProcessing->populateUpdateFields($data);
+
+        // UPDATE the record
+        $savedOk = $this->repository->updateNewRecord($data);
+
+        $message =  "You successfully updated your email message!";
+
+        if ($request->input('send_email') == "Save & Send") {
+            $message = "You successfully updated, and sent, your email message!";
+        }
+
+        $status_code = 200;
+
+        if (!$savedOk) {
+            $message     =  "There was a problem updating your email message!";
+            $status_code = 400;
+        }
+
+        Session::flash('message',     $message);
+        Session::flash('status_code', $status_code );
+
+        if (!$savedOk) {
+
+            // unlock the record
+            $this->repository->unpopulateLockFields($request->input('id'));
+
+            return redirect('admin/emailhandling/'.$request->input('id').'/edit')
+                ->withInput()
+            ;
+        }
+
+
+        if ($request->input('send_email') == "Save & Send") {
+
+            // send the email
+            $this->emailProcessing->sendEmail($request->input('id'));
+
+            // mark email as sent
+            $this->repository->markEmailAsSent($request->input('id'));
+        }
+
+        return Redirect::route('admin.emailhandling.index');
+
+
     }
 }

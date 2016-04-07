@@ -133,4 +133,45 @@ class Email_messageRepository extends BaseRepository
 
         return $emailMessage->save();
     }
+
+    /**
+     * Save the model to the database.
+     *
+     * https://laravel.com/docs/5.1/eloquent#basic-inserts
+     *
+     * @param $data
+     */
+    public function updateNewRecord($data) {
+
+        $emailMessage = $this->model->find($data['id']);
+
+        $emailMessage->user_id             = $data['user_id'];
+        $emailMessage->priority_id         = $data['priority_id'];
+
+
+        if (isset($data['from_email_address'])) {
+            $emailMessage->from_email_address  = $data['from_email_address'];
+        }
+
+        if (isset($data['from_name'])) {
+            $emailMessage->from_name = $data['from_name'];
+        }
+
+        if (isset($data['to_email_address'])) {
+            $emailMessage->to_email_address  = $data['to_email_address'];
+        }
+
+        if (isset($data['to_name'])) {
+            $emailMessage->to_name = $data['to_name'];
+        }
+
+        $emailMessage->subject             = $data['subject'];
+        $emailMessage->body                = $data['body'];
+        $emailMessage->priority_id         = $data['priority_id'];
+        $emailMessage->archived            = $data['archived'];
+        $emailMessage->updated_at          = $data['updated_at'];
+        $emailMessage->updated_by          = $data['updated_by'];
+
+        return $emailMessage->save();
+    }
 }
