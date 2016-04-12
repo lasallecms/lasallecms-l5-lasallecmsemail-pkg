@@ -73,6 +73,8 @@ class CreateCrmemailTables extends Migration {
 
                 $table->text('body');
 
+                $table->text('message_header')->nullable();
+
                 $table->boolean('sent')->default(false);
                 $table->boolean('sent_timestamp')->nullable();
                 $table->boolean('read')->default(false);

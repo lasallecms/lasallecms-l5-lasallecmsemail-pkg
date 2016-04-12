@@ -44,7 +44,7 @@ use Lasallecrm\Lasallecrmemail\Models\Email_message;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
 
-use Lasallecrm\Lasallecrmemail\Processing\EmailProcessing;
+use Lasallecrm\Lasallecrmemail\Processing\AdminEmailProcessing;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -84,24 +84,24 @@ class AdminEmailHandlingController extends AdminFormBaseController
     protected $email_attachmentRepository;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Processing\EmailProcessing
+     * @var Lasallecrm\Lasallecrmemail\Processing\AdminEmailProcessing
      */
-    protected $createEmailMessageFormProcessing;
+    protected $adminEmailProcessing;
 
 
     /**
      * AdminEmailHandlingController constructor.
      *
      * @param Email_message              $model
-     * @param Email_messageRepository    $email_messageRepository
+     * @param Email_messageRepository    $repository
      * @param Email_attachmentRepository $email_attachmentRepository
-     * @param EmailProcessing            $emailProcessing
+     * @param AdminEmailProcessing       $adminEmailProcessing
      */
     public function __construct(
         Email_message              $model,
         Email_messageRepository    $repository,
         Email_attachmentRepository $email_attachmentRepository,
-        EmailProcessing            $emailProcessing
+        AdminEmailProcessing       $adminEmailProcessing
     ) {
 
         // execute AdminController's construct method first in order to run the middleware
@@ -117,7 +117,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
         // Inject the relevant model into the email_message repository
         //$this->repository->injectModelIntoRepository($this->model->model_namespace."\\".$this->model->model_class);
 
-        $this->emailProcessing             = $emailProcessing;
+        $this->adminEmailProcessing         = $adminEmailProcessing;
     }
 
 
@@ -150,7 +150,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
 
         return view('lasallecrmemail::admin/emailhandling/index',
             [
-                'records'                      => $records ,
+                'records'                      => $records,
                 'package_title'                => $this->model->package_title,
                 'table_name'                   => $this->model->table,
                 'model_class'                  => $this->model->model_class,
@@ -209,10 +209,10 @@ class AdminEmailHandlingController extends AdminFormBaseController
     public function store(Request $request) {
 
         // Get a washed array of the create form's input fields
-        $data = $this->emailProcessing->washCreateForm($request);
+        $data = $this->adminEmailProcessing->washCreateForm($request);
 
         // Validate the create form's input fields
-        $validator = $this->emailProcessing->validateCreateForm($data);
+        $validator = $this->adminEmailProcessing->validateCreateForm($data);
 
         // Did validate pass or fail?
         if ($validator->fails()) {
@@ -224,7 +224,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
 
         // Populate the fields
         // $data is an array
-        $data = $this->emailProcessing->populateCreateFields($data);
+        $data = $this->adminEmailProcessing->populateCreateFields($data);
 
         // INSERT the record
         $savedOk = $this->repository->insertNewRecord($data);
@@ -254,7 +254,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
         if ($request->input('send_email') == "Save & Send") {
 
             // send the email
-            $this->emailProcessing->sendEmail($data);
+            $this->adminEmailProcessing->sendEmail($data);
         }
 
         return Redirect::route('admin.emailhandling.index');
@@ -358,10 +358,10 @@ class AdminEmailHandlingController extends AdminFormBaseController
         $this->repository->markEmailAsRead($request->input('id'));
 
         // Get a washed array of the create form's input fields
-        $data = $this->emailProcessing->washCreateForm($request);
+        $data = $this->adminEmailProcessing->washCreateForm($request);
 
         // Validate the create form's input fields
-        $validator = $this->emailProcessing->validateCreateForm($data);
+        $validator = $this->adminEmailProcessing->validateCreateForm($data);
 
         // Did validate pass or fail?
         if ($validator->fails()) {
@@ -376,7 +376,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
         }
 
         // Populate the fields
-        $data = $this->emailProcessing->populateUpdateFields($data);
+        $data = $this->adminEmailProcessing->populateUpdateFields($data);
 
         // UPDATE the record
         $savedOk = $this->repository->updateNewRecord($data);
@@ -411,14 +411,12 @@ class AdminEmailHandlingController extends AdminFormBaseController
         if ($request->input('send_email') == "Save & Send") {
 
             // send the email
-            $this->emailProcessing->sendEmail($request->input('id'));
+            $this->adminEmailProcessing->sendEmail($request->input('id'));
 
             // mark email as sent
             $this->repository->markEmailAsSent($request->input('id'));
         }
 
         return Redirect::route('admin.emailhandling.index');
-
-
     }
 }

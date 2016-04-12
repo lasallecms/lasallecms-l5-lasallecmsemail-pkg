@@ -37,15 +37,54 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Config Setting
+    | Attachment path
     |--------------------------------------------------------------------------
     |
-    | Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-    | ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
-    | dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
+    | Where in your public folder do  you want to save attachments?
+    | For example, 'attachments' = http://domain.com/attachments.
+    |
+    | Not set up to save to S3 (or anywhere else).
     |
     */
-    'config_key' => 'config_value',
+    'attachment_path' => 'attachments',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inbound emails from these senders only
+    |--------------------------------------------------------------------------
+    |
+    | Optionally allow inbound emails from these senders only.
+    |
+    | For Mailgun, it is the email specified in the "senders" post var.
+    |
+    */
+    'inbound_emails_from_allowed_senders_only' => true,
+
+    'inbound_emails_from_allowed_senders_only_list_of_senders' => [
+        'krugerbloom@rogers.com',
+        'sinbad@adventures.net'
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Map inbound Mailgun route with "users" email address
+    |--------------------------------------------------------------------------
+    |
+    | An email is sent. The MX record results in the email being sent to Mailgun.
+    | Mailgun looks at the inbound routes that we set up, and then sends it to
+    | our web application.
+    |
+    | What I am assuming here is that there is one Mailgun route (that's what Mailgun calls 'em, "routes")
+    | for one email in the LaSalle Software "users" table (which is the db table Laravel -- and LaSalle Software.
+    | uses -- for auth).
+    |
+    | So, one recipient for each incoming Mailgun route maps to one record in the "users" table (by email address).
+    |
+    |
+    */
+    'inbound_map_mailgun_routes_with_user_email_address' => [
+        'Lely@emailtx.southlasalle.com' => 'krugerbloom@rogers.com'
+    ],
 
 ];
 

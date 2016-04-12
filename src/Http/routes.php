@@ -67,6 +67,11 @@ Route::group(array('prefix' => 'email'), function() {
 
     Route::get('inboundget', 'LelyController@inboundget');
     Route::post('inboundpost', 'LelyController@inboundpost');
+
+    Route::post('inboundemailstandardhandling', [
+        'as'   => 'inboundEmailMailgunController',
+        'uses' => 'inboundEmailMailgunController@inboundStandardHandling'
+    ]);
 });
 
 
@@ -79,6 +84,13 @@ Route::group(array('prefix' => 'admin'), function()
     Route::post('emailhandling/confirmDeletionMultipleRows', 'AdminEmailHandlingController@confirmDeletionMultipleRows');
     Route::post('emailhandling/destroyMultipleRecords', 'AdminEmailHandlingController@destroyMultipleRecords');
 });
+
+
+// Front end test routes
+Route::get('tests/inboundMailgunWebhook', [
+    'as'   => 'test.inboundMailgunWebhook',
+    'uses' => 'Tests\InboundMailgunWebhookTest@testViewInboundMailgunWebhook'
+]);
 
 
 

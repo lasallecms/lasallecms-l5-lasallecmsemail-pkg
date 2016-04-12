@@ -56,7 +56,7 @@ use Carbon\Carbon;
  * Class CreateEmailMessageFormProcessing
  * @package Lasallecrm\Lasallecrmemail\Processing\EmailProcessing
  */
-class EmailProcessing
+class AdminEmailProcessing
 {
     use PrepareForPersist;
 
@@ -73,12 +73,12 @@ class EmailProcessing
 
     /**
      * EmailProcessing constructor.
-     * @param Request $request
-     * @param Email_message $email_message
+     * @param Request         $request
+     * @param Email_message   $email_message
      */
     public function __construct(Request $request, Email_message $email_message) {
-        $this->request       = $request;
-        $this->email_message = $email_message;
+        $this->request                       = $request;
+        $this->email_message                 = $email_message;
     }
 
 
@@ -86,6 +86,21 @@ class EmailProcessing
     ///////////////////////////////////////////////////////////////////
     ///////     CREATE EMAIL_MESSAGES RECORD                      /////
     ///////////////////////////////////////////////////////////////////
+
+    /**
+     * Are the create form inputs ok?
+     *
+     * @param  array   $data   Array of create form input fields
+     * @return Laravel validate object
+     */
+    public function validateCreateForm($data) {
+        return Validator::make($data, [
+            'to_email_address' => 'required|email',
+            'to_name'          => 'max:255',
+            'subject'          => 'required|min:5|max:255',
+            'body'             => 'required|min:10',
+        ]);
+    }
 
     /**
      * Wash the create form's input fields
@@ -104,21 +119,6 @@ class EmailProcessing
         $data['body']             = $this->genericWashText($this->request->input('body'));
 
         return $data;
-    }
-
-    /**
-     * Are the create form inputs ok?
-     *
-     * @param  array   $data   Array of create form input fields
-     * @return Laravel validate object
-     */
-    public function validateCreateForm($data) {
-        return Validator::make($data, [
-            'to_email_address' => 'required|email',
-            'to_name'          => 'max:255',
-            'subject'          => 'required|min:5|max:255',
-            'body'             => 'required|min:10',
-        ]);
     }
 
     /**
@@ -268,7 +268,4 @@ class EmailProcessing
 
         return $data;
     }
-
-
-
 }

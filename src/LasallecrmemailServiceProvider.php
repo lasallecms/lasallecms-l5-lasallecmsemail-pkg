@@ -70,6 +70,8 @@ class LasallecrmemailServiceProvider extends ServiceProvider {
 
         //$this->setupMigrations();
         //$this->setupSeeds();
+
+        //$this->bindInterfacesToImplementations();
     }
 
 
@@ -172,5 +174,21 @@ class LasallecrmemailServiceProvider extends ServiceProvider {
      */
     public function provides() {
         return array('lasallecrmemail');
+    }
+
+
+    /**
+     * Bind interfaces to implementations
+     *
+     * https://laravel.com/docs/5.1/container#binding-interfaces-to-implementations
+     *
+     * @return void
+     */
+    public function bindInterfacesToImplementations() {
+
+        $this->app->bind(
+            'Lasallecrm\Lasallecrmemail\Contracts\InboundWebhookProcessing',
+            'Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing'
+        );
     }
 }
