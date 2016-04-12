@@ -99,7 +99,7 @@ class MailgunInboundWebhookProcessing
         $data['subject']            = $this->genericWashText($this->request->input('subject'));
         $data['slug']               = $this->genericCreateSlug($data['subject']);
         $data['body']               = $this->setBodyField();
-        $data['message_header']     = $this->request->input('message-headers');
+        $data['message_header']     = json_decode($this->request->input('message-headers'));
         $data['sent']               = 1;
         $data['sent_timestamp']     = Carbon::now();
         $data['read']               = 0;

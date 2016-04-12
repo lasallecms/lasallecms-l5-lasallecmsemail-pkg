@@ -37,6 +37,7 @@ namespace Lasallecrm\Lasallecrmemail\Http\Controllers;
 use Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing;
 use Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
+use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -116,21 +117,29 @@ class inboundEmailMailgunController extends Controller
      */
     protected $repository;
 
+    /**
+     * @var Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository
+     */
+    protected $email_attachmentrepository;
+
 
     /**
      * inboundEmailMailgunController constructor.
      * @param Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing  $mailgunInboundWebhookProcessing
      * @param Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing           $genericEmailProcessing
-     * @param Email_messageRepository                                                $email_messageRepository
+     * @param Email_messageRepository                                                $repository
+     * @param Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository     $email_attachmentRepository
      */
     public function __construct(
         MailgunInboundWebhookProcessing  $mailgunInboundWebhookProcessing,
         GenericEmailProcessing           $genericEmailProcessing,
-        Email_messageRepository          $repository
+        Email_messageRepository          $repository,
+        Email_attachmentRepository       $email_attachmentRepository
     ) {
         $this->mailgunInboundWebhookProcessing = $mailgunInboundWebhookProcessing;
         $this->genericEmailProcessing          = $genericEmailProcessing;
         $this->repository                      = $repository;
+        $this->email_attachmentrepository      = $email_attachmentRepository;
     }
 
 
@@ -206,9 +215,29 @@ class inboundEmailMailgunController extends Controller
 
         // attachments: build the data
 
+        // How many attachments are there?
+        $numberOfAttachments = $request->input('attachment-count');
+
+        $destinationPath = public_path() . "/lely/";
+        if ($request->hasFile('attachment-1')) {
+            //$vars['bob-attach-1'] = $request->file('attachment-1');
+            //$request->file('attachment-1')->move($destinationPath, 'bobby.jpg');
+        }
+
+
+
         // attachments: INSERT
+        $data = [];
+        $data['email_messages_id']   = 1;
+        $data['attachment_path']     = $destinationPath;
+        $data['attachment_filename'] = $request->file('attachment-1')->getClientOriginalName();
+        $data['comments']            = "no comment";
+
+        $this->email_attachmentrepository->insertNewRecord($data);
+
 
         // attachments: save to filesystem
+        $request->file('attachment-1')->move($destinationPath, $request->file('attachment-1')->getClientOriginalName());
 
     }
 }

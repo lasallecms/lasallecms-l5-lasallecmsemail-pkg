@@ -67,4 +67,23 @@ class Email_attachmentRepository extends BaseRepository
     public function  getEmailAttachmentsForAdminShow($id) {
         return $this->model->where('email_messages_id', $id)->get();
     }
+
+    /**
+     * Save the model to the database.
+     *
+     * https://laravel.com/docs/5.1/eloquent#basic-inserts
+     *
+     * @param $data
+     */
+    public function insertNewRecord($data) {
+
+        $emailAttachment = new Email_attachment;
+
+        $emailAttachment->email_messages_id   = $data['email_messages_id'];
+        $emailAttachment->attachment_path     = $data['attachment_path'];
+        $emailAttachment->attachment_filename = $data['attachment_filename'];
+        $emailAttachment->comments            = $data['comments'];
+
+        return $$emailAttachment->save();
+    }
 }
