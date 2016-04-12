@@ -206,12 +206,12 @@ class inboundEmailMailgunController extends Controller
         if ($savedOk) {
             $message = "Your email to ".$request->input('recipient')." was successfully processed";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
-            return response('Success!', 200);
+            //return response('Success!', 200);
         }
 
         $message = "Your email to ".$request->input('recipient')."was not successfully processed";
         $this->genericEmailProcessing->sendEmailNotificationToSender($message);
-        return response('Invalid processing.', 406);
+        //return response('Invalid processing.', 406);
 
         // attachments: build the data
 
@@ -237,7 +237,9 @@ class inboundEmailMailgunController extends Controller
 
 
         // attachments: save to filesystem
-        $request->file('attachment-1')->move($destinationPath, $request->file('attachment-1')->getClientOriginalName());
+        //$request->file('attachment-1')->move($destinationPath, $request->file('attachment-1')->getClientOriginalName());
+
+        return response('Success!', 200);
 
     }
 }
