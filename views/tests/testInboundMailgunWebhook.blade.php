@@ -71,6 +71,7 @@
 
                                 <input name="token" type="hidden" value="0a080d77b986a00487f7a41c3647182f3d5f7c9bce21824340">
 
+                                <input name="attachment-count" type="hidden" value="2">
                                 <input name="attachment-1" type="hidden" value="/tmp/phpGcpwb3">
 
                                 {{-- Submit and cancel buttons --}}

@@ -37,6 +37,7 @@ namespace Lasallecrm\Lasallecrmemail\Logintoken;
 use Lasallecms\Lasallecmsapi\Repositories\UserRepository;
 
 // Laravel facades
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -66,18 +67,23 @@ class SendLoginTokenEmail
      */
     public function sendEmail($id) {
 
-        $user = $this->userRepository->getFind($id);
+        // Getting a fatal exception "Call to a member function getFind() on null".
+        // Really pressed for time, error is mysterious, all looks fine.
+        // Using DB right here ;-(
+        // TODO: fatal exception "Call to a member function getFind() on null"
+        //$user = $this->userRepository->getFind($id);
+        $user = DB::table('users')->where('id', $id)->first();
 
         $data = $this->buildEmailData($user);
 
         // What blade file to use?
-        $emailBladeFile = 'lasallecrmemail::send_login_token_email';
+        $emailBladeFile = 'lasallecrmemail::email.send_login_token_email';
 
         // Send da email
         Mail::queue($emailBladeFile, ['data' => $data], function ($message) use ($data) {
 
             $message->from($data['from_email_address'], $data['from_name']);
-            $message->to($data['to_email_address'] , $data['to_email_address']);
+            $message->to($data['to_email_address'] , $data['to_name']);
             $message->subject($data['subject']);
         });
     }
@@ -92,9 +98,11 @@ class SendLoginTokenEmail
 
         $data['login_token_link']   = config('app.url').'/auth/login/token/'.$user->login_token;
         $data['from_name']          = config('lasallecmsfrontend.site_name');
-        $data['from_email_address'] = config('lasallecmsusermanagement.administrator_first_among_equals_emai');
+        $data['from_email_address'] = config('lasallecmsusermanagement.administrator_first_among_equals_email');
         $data['to_name']            = $user->name;
         $data['to_email_address']   = $user->email;
         $data['subject']            = "New pictures for you!";
+
+        return $data;
     }
 }

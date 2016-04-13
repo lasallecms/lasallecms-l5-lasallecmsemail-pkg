@@ -36,6 +36,7 @@ namespace Lasallecrm\Lasallecrmemail\Processing;
 // LaSalle Software
 use Lasallecms\Lasallecmsapi\Repositories\Traits\PrepareForPersist;
 use Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing;
+use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -65,14 +66,25 @@ class MailgunInboundWebhookProcessing
      */
     protected $request;
 
+    /**
+     * @var Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository
+     */
+    protected $email_attachmentRepository;
+
 
     /**
      * inboundEmailMailgunController constructor.
-     * @param Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing    $genericEmailProcessing
+     * @param Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing       $genericEmailProcessing
+     * @param Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository $email_attachmentRepository
      */
-    public function __construct(Request $request, GenericEmailProcessing $genericEmailProcessing) {
-        $this->request                = $request;
-        $this->genericEmailProcessing = $genericEmailProcessing;
+    public function __construct(
+        Request                    $request,
+        GenericEmailProcessing     $genericEmailProcessing,
+        Email_attachmentRepository $email_attachmentRepository
+    ) {
+        $this->request                    = $request;
+        $this->genericEmailProcessing     = $genericEmailProcessing;
+        $this->email_attachmentRepository = $email_attachmentRepository;
     }
 
 
@@ -266,6 +278,11 @@ class MailgunInboundWebhookProcessing
         return $this->genericEmailProcessing->getUsersNameByEmailAddress($userEmailAddress);
     }
 
+    /**
+     * Set the email's body field
+     *
+     * @return mixed
+     */
     public function setBodyField() {
 
         if ($this->request->input('stripped-html')) {
@@ -273,5 +290,46 @@ class MailgunInboundWebhookProcessing
         }
 
         return $this->request->input('body-plain');
+    }
+
+    /**
+     * Process attachments
+     *
+     * @param  int   $emailMessageID    The ID of the just inserted "email_messages" record
+     * @return void
+     */
+    public function processAttachments($emailMessageID) {
+
+        $numberOfAttachments = $this->request->input('attachment-count');
+        $attachmentPath      = public_path() . "/".config('lasallecrmemail.attachment_path')."/";
+
+        // INSERT into the "email_attachments" db table
+        for ($i = 1; $i <= $numberOfAttachments; $i++) {
+            $data = $this->prepareAttachmentDataForInsert($emailMessageID, $i, $attachmentPath);
+            $this->email_attachmentRepository->insertNewRecord($data);
+        }
+
+        // Upload
+        //$this->request->file('attachment-'.$i)->move($attachmentPath, $this->request->file('attachment-'.$i)->getClientOriginalName());
+    }
+
+    /**
+     * Prepare the data for the INSERT into the "email_attachments" db table.
+     *
+     * @param  int    $emailMessageID    The ID of the just inserted "email_messages" record
+     * @param  int    $attachment        What attachment number? eg, attachment-1. AKA, Mailgun's "attachment-x" post var
+     * @param  string $attachmentPath    Where are the attachments saved?
+     * @return array
+     */
+    public function prepareAttachmentDataForInsert($emailMessageID, $attachment, $attachmentPath) {
+
+        $data = [];
+        $data['email_messages_id']   = $emailMessageID;
+        $data['attachment_path']     = $attachmentPath;
+        //$data['attachment_filename'] = $this->request ->file('attachment-'.$attachment)->getClientOriginalName();
+        $data['attachment_filename'] = "jonathon1.jpg";
+        $data['comments']            = null;
+
+        return $data;
     }
 }

@@ -38,8 +38,8 @@ use Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing;
 use Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
-use Lasallecrm\Lasallecrmemail\Logintoken\CreateLoginToken;
-use Lasallecrm\Lasallecrmemail\Logintoken\SendLoginTokenEmail;
+use Lasallecrm\Lasallecrmemail\LoginToken\CreateLoginToken;
+use Lasallecrm\Lasallecrmemail\LoginToken\SendLoginTokenEmail;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -224,50 +224,17 @@ class inboundEmailMailgunController extends Controller
         if (!$savedOk) {
              $message = "Your email to ".$request->input('recipient')."was not successfully processed";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
-            //return response('Invalid processing.', 406);
-        }
-
-        $message = "RE: ".$request->input('subject').".  Your email to ".$request->input('recipient')." was successfully processed";
-        //$this->genericEmailProcessing->sendEmailNotificationToSender($message);
-        //return response('Success!', 200);
-
-        // attachments: build the data
-
-        // How many attachments are there?
-        $numberOfAttachments = $request->input('attachment-count');
-
-        $destinationPath = public_path() . "/lely/";
-        if ($request->hasFile('attachment-1')) {
-            //$vars['bob-attach-1'] = $request->file('attachment-1');
-            //$request->file('attachment-1')->move($destinationPath, 'bobby.jpg');
+            return response('Invalid processing.', 406);
         }
 
 
 
-        // attachments: INSERT
+        // Process attachments
+        if ($request->input('attachment-count')) {
 
-        $data = [];
-
-        // $savedOk is the ID of the recently INSERTed email_message ID
-        $data['email_messages_id']   = $savedOk;
-        $data['attachment_path']     = $destinationPath;
-        $data['attachment_filename'] = $request->file('attachment-1')->getClientOriginalName();
-        $data['comments']            = "no comment";
-
-/*
-        $data = [];
-
-        // $savedOk is the ID of the recently INSERTed email_message ID
-        $data['email_messages_id']   = $savedOk;
-        $data['attachment_path']     = "attachment path!";
-        $data['attachment_filename'] = "bobby.jpg";
-        $data['comments']            = "no comment";
-*/
-        $this->email_attachmentrepository->insertNewRecord($data);
-
-
-        // attachments: save to filesystem
-        //$request->file('attachment-1')->move($destinationPath, $request->file('attachment-1')->getClientOriginalName());
+            // $savedOk returns the ID of the recently INSERTed record
+            $this->mailgunInboundWebhookProcessing->processAttachments($savedOk);
+        }
 
 
         // Create a Login Token
@@ -277,6 +244,10 @@ class inboundEmailMailgunController extends Controller
         // Send Login Token email
         $this->sendLoginTokenEmail->sendEmail($userId);
 
+
+        // Notification email to inbound email's sender
+        $message = "RE: ".$request->input('subject').".  Your email to ".$request->input('recipient')." was successfully processed";
+        $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
 
         return response('Success!', 200);

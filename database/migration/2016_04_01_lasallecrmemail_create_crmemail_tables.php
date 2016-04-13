@@ -110,7 +110,7 @@ class CreateCrmemailTables extends Migration {
 
                 $table->string('attachment_path');
                 $table->string('attachment_filename');
-                $table->text('comments');
+                $table->text('comments')->nullable();
             });
         }
     }
