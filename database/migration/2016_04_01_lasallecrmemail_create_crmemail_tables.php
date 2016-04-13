@@ -110,6 +110,8 @@ class CreateCrmemailTables extends Migration {
 
                 $table->string('attachment_path');
                 $table->string('attachment_filename');
+                $table->string('alternate_sort_string1')->nullable()->index();
+                $table->string('alternate_sort_string2')->nullable()->index();
                 $table->text('comments')->nullable();
             });
         }

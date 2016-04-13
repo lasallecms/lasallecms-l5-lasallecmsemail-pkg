@@ -70,7 +70,8 @@ Route::group(array('prefix' => 'email'), function() {
 
     Route::post('inboundemailstandardhandling', [
         'as'   => 'inboundEmailMailgunController',
-        'uses' => 'inboundEmailMailgunController@inboundStandardHandling'
+        //'uses' => 'inboundEmailMailgunController@inboundStandardHandling'
+        'uses' => 'CustomInboundEmailMailgunController@inboundStandardHandling'
     ]);
 });
 

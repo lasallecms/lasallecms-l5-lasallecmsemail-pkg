@@ -296,21 +296,22 @@ class MailgunInboundWebhookProcessing
      * Process attachments
      *
      * @param  int   $emailMessageID    The ID of the just inserted "email_messages" record
+     * @param  array $input             Specially parsed input data gleaned & massaged from the request object
      * @return void
      */
-    public function processAttachments($emailMessageID) {
+    public function processAttachments($emailMessageID, $input=null) {
 
         $numberOfAttachments = $this->request->input('attachment-count');
         $attachmentPath      = public_path() . "/".config('lasallecrmemail.attachment_path')."/";
 
         // INSERT into the "email_attachments" db table
         for ($i = 1; $i <= $numberOfAttachments; $i++) {
-            $data = $this->prepareAttachmentDataForInsert($emailMessageID, $i, $attachmentPath);
+            $data = $this->prepareAttachmentDataForInsert($emailMessageID, $i, $attachmentPath, $input);
             $this->email_attachmentRepository->insertNewRecord($data);
         }
 
         // Upload
-        //$this->request->file('attachment-'.$i)->move($attachmentPath, $this->request->file('attachment-'.$i)->getClientOriginalName());
+        $this->request->file('attachment-'.$i)->move($attachmentPath, $this->request->file('attachment-'.$i)->getClientOriginalName());
     }
 
     /**
@@ -321,14 +322,30 @@ class MailgunInboundWebhookProcessing
      * @param  string $attachmentPath    Where are the attachments saved?
      * @return array
      */
-    public function prepareAttachmentDataForInsert($emailMessageID, $attachment, $attachmentPath) {
+    public function prepareAttachmentDataForInsert($emailMessageID, $attachment, $attachmentPath, $input=null) {
 
         $data = [];
         $data['email_messages_id']   = $emailMessageID;
         $data['attachment_path']     = $attachmentPath;
-        //$data['attachment_filename'] = $this->request ->file('attachment-'.$attachment)->getClientOriginalName();
-        $data['attachment_filename'] = "jonathon1.jpg";
-        $data['comments']            = null;
+        $data['attachment_filename'] = $this->request ->file('attachment-'.$attachment)->getClientOriginalName();
+
+        if ($input['alternate_sort_string1']) {
+            $data['alternate_sort_string1'] = $input['alternate_sort_string1'];
+        } else {
+            $data['alternate_sort_string1'] = null;
+        }
+
+        if ($input['alternate_sort_string2']) {
+            $data['alternate_sort_string2'] = $input['alternate_sort_string2'];
+        } else {
+            $data['alternate_sort_string2'] = null;
+        }
+
+        if ($input['comments']) {
+            $data['comments']         = $input['comments'];
+        } else {
+            $data['comments']         = null;
+        }
 
         return $data;
     }

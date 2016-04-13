@@ -42,7 +42,7 @@ use Illuminate\Http\Request;
 // Laravel facades
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+
 
 /**
  * Common processing methods

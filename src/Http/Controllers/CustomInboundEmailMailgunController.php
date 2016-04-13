@@ -34,6 +34,7 @@ namespace Lasallecrm\Lasallecrmemail\Http\Controllers;
  */
 
 // LaSalle Software
+use Lasallecms\Lasallecmsapi\Repositories\Traits\PrepareForPersist;
 use Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing;
 use Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
@@ -45,11 +46,24 @@ use Lasallecrm\Lasallecrmemail\LoginToken\SendLoginTokenEmail;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+// Laravel facades
+use Illuminate\Support\Facades\DB;
+
+// Third party classes
+use Carbon\Carbon;
+
+
 /**
- * Class inboundEmailMailgunController
+ * This custom inbound email process has an email coming in from an employee, but the email pertains to another user
+ * (a customer). So the employee and customer both need to be users (in the "users" table).
+ *
+ * Also, the attachments relate to an order number, which is stored in the "email_attachments" table's
+ * "alternate_sort_string1" field.
+ *
+ * Class customInboundEmailMailgunController
  * @package Lasallecrm\Lasallecrmemail\Http\Controllers
  */
-class inboundEmailMailgunController extends Controller
+class CustomInboundEmailMailgunController extends Controller
 {
     /**
      * Handle the standard Mailgun inbound webhook.
@@ -103,6 +117,15 @@ class inboundEmailMailgunController extends Controller
      *
      */
 
+
+    use PrepareForPersist;
+
+
+    /**
+     * @var Illuminate\Http\Request
+     */
+    protected $request;
+
     /**
      * @var Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing
      */
@@ -136,6 +159,7 @@ class inboundEmailMailgunController extends Controller
 
     /**
      * inboundEmailMailgunController constructor.
+     * @param Illuminate\Http\Request                                                $request
      * @param Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing  $mailgunInboundWebhookProcessing
      * @param Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing           $genericEmailProcessing
      * @param Email_messageRepository                                                $repository
@@ -144,6 +168,7 @@ class inboundEmailMailgunController extends Controller
      * @param Lasallecrm\Lasallecrmemail\Logintoken\SendLoginTokenEmail              $sendLoginTokenEmail
      */
     public function __construct(
+        Request                          $request,
         MailgunInboundWebhookProcessing  $mailgunInboundWebhookProcessing,
         GenericEmailProcessing           $genericEmailProcessing,
         Email_messageRepository          $repository,
@@ -151,6 +176,7 @@ class inboundEmailMailgunController extends Controller
         CreateLoginToken                 $createLoginToken,
         SendLoginTokenEmail              $sendLoginTokenEmail
     ) {
+        $this->request                         = $request;
         $this->mailgunInboundWebhookProcessing = $mailgunInboundWebhookProcessing;
         $this->genericEmailProcessing          = $genericEmailProcessing;
         $this->repository                      = $repository;
@@ -174,80 +200,187 @@ class inboundEmailMailgunController extends Controller
      * @param Request $request
      * @return mixed
      */
-    public function inboundStandardHandling(Request $request) {
+    public function inboundStandardHandling() {
 
         // Is Mailgun's inbound POST request authentic?
         if (!$this->mailgunInboundWebhookProcessing->verifyWebhookSignature()) {
             return response('Invalid signature.', 406);
         }
 
+
         // Are we checking that the inbound email is from a pre-approved sender? If so, do the check.
-        if (!$this->genericEmailProcessing->emailsComeFromListOfApprovedSenders($request->input('sender'))) {
+        // The sender is an employee, who must have a record in the "users" table
+        if (!$this->genericEmailProcessing->emailsComeFromListOfApprovedSenders($this->request->input('sender'))) {
 
             // sender is not on the list of pre-approved senders
 
             // send an email back to sender that this email is rejected
-            $message = "Your email has been rejected because you are not a pre-approved sender";
+            $message = "RE: ".$this->getSubject().".  Your email has been rejected because you are not a pre-approved sender";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
             return response('Invalid sender.', 406);
         }
 
+
         // Does the Mailgun route map to a user?
+        // Let's do this check on the employee
         if (!$this->mailgunInboundWebhookProcessing->isInboundEmailToEmailAddressMapToUser()) {
 
             // "To" is not mapped to a user
 
             // send an email back to sender that this email is rejected
-            $message = "Your email has been rejected because your recipient is not allowed";
+            $message = "RE: ".$this->getSubject().".  Your email has been rejected because your recipient is not allowed";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
             return response('Invalid recipient.', 406);
         }
 
+
         // Does the mapped user actually exist in the "users" db table?
+        // Let's do this check on the employee
         if (!$this->mailgunInboundWebhookProcessing->isMappedUserExistInUsersTable()) {
             return response('Invalid sender.', 406);
         }
 
-        // build the data for INSERT into email_messages
-        // do up a new "message_headers" field
-        $data = $this->mailgunInboundWebhookProcessing->mapInboundPostVarsToEmail_messagesFields();
+
+        // Before we continue, at this point we need to validate that there are attachment(s).
+        if (!$this->request->input('attachment-count')) {
+
+            // send an email back to sender that this email is rejected
+            $message = "RE: ".$this->getSubject().".  Your email has been rejected because there are no attachments";
+            $this->genericEmailProcessing->sendEmailNotificationToSender($message);
+
+            // send response to Mailgun
+            return response('Invalid recipient.', 406);
+        }
 
 
-        // INSERT
+        // Before we continue, at this point we will pretend that the customer sent the inbound email.
+
+        $input = [];
+
+
+        // Parse the subject line.
+        // subject line in the form "123456,654321", where 123456 = userID and 654321 = order number
+        $subjectLine = explode(',', $this->request->input('subject'));
+        $input['userID']                 = $subjectLine[0];
+        $input['orderNumber']            = $subjectLine[1];
+        $input['alternate_sort_string1'] = $input['orderNumber'];
+
+        // Parse the body.
+        // what is between the word "comments" is the actual comments to INSERT into the "email_attachments" db table
+        $comments = $this->request->input('body-plain');
+        $comments = explode("comments", $comments);
+
+        $input['comments'] = trim($comments[1]);
+
+
+        // Does the customer actually exists in the "users" db table?
+        $result =  DB::table('users')
+            ->where('id', $input['userID'])
+            ->value('id');
+        ;
+        if (count($result) == 0) {
+            // send an email back to sender that this email is rejected
+            $message = "RE: ".$this->getSubject().".  Your email has been rejected because the customer assigned as ".$input['userID']." is *not* set up as a user.";
+            $this->genericEmailProcessing->sendEmailNotificationToSender($message);
+
+            // send response to Mailgun
+            return response('Invalid recipient.', 406);
+        }
+
+
+        // Build the data for INSERT into email_messages
+        $data = $this->mapCustomInboundPostVarsToEmail_messagesFields($input);
+
+
+        // INSERT into email_messages
         $savedOk = $this->repository->insertNewRecord($data);
 
         if (!$savedOk) {
-             $message = "Your email to ".$request->input('recipient')."was not successfully processed";
+            $message = "RE: ".$this->getSubject().".  Your email to ".$this->request->input('recipient')." was not successfully processed. Something wrong happened when saving to the database (to email_messages). Please resend!";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
             return response('Invalid processing.', 406);
         }
 
 
         // Process attachments
-        if ($request->input('attachment-count')) {
-
-            // $savedOk returns the ID of the recently INSERTed record
-            $this->mailgunInboundWebhookProcessing->processAttachments($savedOk);
-        }
+        $this->mailgunInboundWebhookProcessing->processAttachments($savedOk.$input);
 
 
         // Create a Login Token
-     //   $userId =  $this->mailgunInboundWebhookProcessing->getUserIdByMappedEmailAddress();
-     //   $this->createLoginToken->createLoginToken($userId);
+        $this->createLoginToken->createLoginToken($input['userID']);
 
         // Send Login Token email
-     //   $this->sendLoginTokenEmail->sendEmail($userId);
+        $this->sendLoginTokenEmail->sendEmail($input['userID']);
 
 
         // Notification email to inbound email's sender
-        $message = "RE: ".$request->input('subject').".  Your email to ".$request->input('recipient')." was successfully processed";
+        $message = "RE: ".$this->getSubject().".  Your email to ".$this->request->input('recipient')." was successfully processed";
         $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
 
         return response('Success!', 200);
+    }
+
+
+
+    /**
+     * Map the non-attachment vars from the inbound email webhook to the email_messages fields
+     *
+     * THIS HAS CUSTOM DATA MASSAGING. I DO NOT WANT TO MESS UP THE STANDARD PROCESSING WITH
+     * CUSTOM STUFF, SO I HAVE THIS METHOD HERE.
+     *
+     * @param  array  $input    Data that was figured out from specific POST vars
+     * @return array
+     */
+    public function mapCustomInboundPostVarsToEmail_messagesFields($input) {
+
+        $data = [];
+
+        $data['user_id']            = $input['userID'];
+
+        $data['priority_id']        = null;
+
+        $data['from_email_address'] = trim($this->request->input('sender'));
+        $data['from_name']          = $this->genericWashText($this->request->input('from'));
+
+        $data['to_email_address']   = DB::table('users')->where('id', $input['userID'])->value('email');
+        $data['to_name']            = DB::table('users')->where('id', $input['userID'])->value('name');
+
+        $data['subject']            = $this->getSubject();
+        $data['slug']               = $this->genericCreateSlug($data['subject']);
+
+        if ($this->request->input('stripped-html')) {
+            $data['body'] = $this->request->input('stripped-html');
+        } else {
+            $data['body'] = $this->request->input('body-plain');
+        }
+
+        $data['message_header']     = json_decode($this->request->input('message-headers'));
+        $data['sent']               = 1;
+        $data['sent_timestamp']     = Carbon::now();
+        $data['read']               = 0;
+        $data['archived']           = 0;
+        $data['created_at']         = Carbon::now();
+        $data['created_by']         = $data['user_id'];
+        $data['updated_at']         = Carbon::now();
+        $data['updated_by']         = $data['user_id'];
+        $data['locked_at']          = null;
+        $data['locked_by']          = null;
+
+        return $data;
+    }
+
+
+    /**
+     * Get the concatenated subject line
+     *
+     * @return string
+     */
+    public function getSubject() {
+        return $this->request->input('subject') . " " . Carbon::now()->toDateTimeString();
     }
 }
