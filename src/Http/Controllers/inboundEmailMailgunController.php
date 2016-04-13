@@ -38,6 +38,8 @@ use Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing;
 use Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
+use Lasallecrm\Lasallecrmemail\Logintoken\CreateLoginToken;
+use Lasallecrm\Lasallecrmemail\Logintoken\SendLoginTokenEmail;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -122,6 +124,16 @@ class inboundEmailMailgunController extends Controller
      */
     protected $email_attachmentrepository;
 
+    /**
+     * @var Lasallecrm\Lasallecrmemail\Logintoken\CreateLoginToken;
+     */
+    protected $createLoginToken;
+
+    /**
+     * @var Lasallecrm\Lasallecrmemail\Logintoken\SendLoginTokenEmail
+     */
+    protected $sendLoginTokenEmail;
+
 
     /**
      * inboundEmailMailgunController constructor.
@@ -129,17 +141,23 @@ class inboundEmailMailgunController extends Controller
      * @param Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing           $genericEmailProcessing
      * @param Email_messageRepository                                                $repository
      * @param Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository     $email_attachmentRepository
+     * @param Lasallecrm\Lasallecrmemail\Logintoken\CreateLoginToken                 $createLoginToken
+     * @param Lasallecrm\Lasallecrmemail\Logintoken\SendLoginTokenEmail              $sendLoginTokenEmail
      */
     public function __construct(
         MailgunInboundWebhookProcessing  $mailgunInboundWebhookProcessing,
         GenericEmailProcessing           $genericEmailProcessing,
         Email_messageRepository          $repository,
-        Email_attachmentRepository       $email_attachmentRepository
+        Email_attachmentRepository       $email_attachmentRepository,
+        CreateLoginToken                 $createLoginToken,
+        SendLoginTokenEmail              $sendLoginTokenEmail
     ) {
         $this->mailgunInboundWebhookProcessing = $mailgunInboundWebhookProcessing;
         $this->genericEmailProcessing          = $genericEmailProcessing;
         $this->repository                      = $repository;
         $this->email_attachmentrepository      = $email_attachmentRepository;
+        $this->createLoginToken                = $createLoginToken;
+        $this->sendLoginTokenEmail             = $sendLoginTokenEmail;
     }
 
 
@@ -203,15 +221,15 @@ class inboundEmailMailgunController extends Controller
         // INSERT
         $savedOk = $this->repository->insertNewRecord($data);
 
-        if ($savedOk) {
-            $message = "Your email to ".$request->input('recipient')." was successfully processed";
+        if (!$savedOk) {
+             $message = "Your email to ".$request->input('recipient')."was not successfully processed";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
-            //return response('Success!', 200);
+            //return response('Invalid processing.', 406);
         }
 
-        $message = "Your email to ".$request->input('recipient')."was not successfully processed";
-        $this->genericEmailProcessing->sendEmailNotificationToSender($message);
-        //return response('Invalid processing.', 406);
+        $message = "RE: ".$request->input('subject').".  Your email to ".$request->input('recipient')." was successfully processed";
+        //$this->genericEmailProcessing->sendEmailNotificationToSender($message);
+        //return response('Success!', 200);
 
         // attachments: build the data
 
@@ -227,19 +245,40 @@ class inboundEmailMailgunController extends Controller
 
 
         // attachments: INSERT
+
         $data = [];
-        $data['email_messages_id']   = 1;
+
+        // $savedOk is the ID of the recently INSERTed email_message ID
+        $data['email_messages_id']   = $savedOk;
         $data['attachment_path']     = $destinationPath;
         $data['attachment_filename'] = $request->file('attachment-1')->getClientOriginalName();
         $data['comments']            = "no comment";
 
+/*
+        $data = [];
+
+        // $savedOk is the ID of the recently INSERTed email_message ID
+        $data['email_messages_id']   = $savedOk;
+        $data['attachment_path']     = "attachment path!";
+        $data['attachment_filename'] = "bobby.jpg";
+        $data['comments']            = "no comment";
+*/
         $this->email_attachmentrepository->insertNewRecord($data);
 
 
         // attachments: save to filesystem
         //$request->file('attachment-1')->move($destinationPath, $request->file('attachment-1')->getClientOriginalName());
 
-        return response('Success!', 200);
 
+        // Create a Login Token
+        $userId =  $this->mailgunInboundWebhookProcessing->getUserIdByMappedEmailAddress();
+        $this->createLoginToken->createLoginToken($userId);
+
+        // Send Login Token email
+        $this->sendLoginTokenEmail->sendEmail($userId);
+
+
+
+        return response('Success!', 200);
     }
 }

@@ -208,7 +208,7 @@ class GenericEmailProcessing
         $data['to_email_address']     = trim($this->request->input('sender'));
         $data['to_name']              = $this->genericWashText($this->request->input('from'));
         $data['subject']              = "Notification email from ".$data['site_name'];
-        $data['message']              = "Re: ".$data['subject'].":  ".$message;
+        $data['message']              = $message;
 
         $data['sender_email_address'] = "info@southlasalle.com";
 

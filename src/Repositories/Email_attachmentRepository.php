@@ -84,6 +84,6 @@ class Email_attachmentRepository extends BaseRepository
         $emailAttachment->attachment_filename = $data['attachment_filename'];
         $emailAttachment->comments            = $data['comments'];
 
-        return $$emailAttachment->save();
+        return $emailAttachment->save();
     }
 }

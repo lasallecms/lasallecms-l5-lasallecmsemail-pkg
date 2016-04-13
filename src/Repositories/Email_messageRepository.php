@@ -131,7 +131,13 @@ class Email_messageRepository extends BaseRepository
         $emailMessage->updated_at          = $data['updated_at'];
         $emailMessage->updated_by          = $data['updated_by'];
 
-        return $emailMessage->save();
+        if ($emailMessage->save()) {
+
+            // Return the new ID
+            return $emailMessage->id;
+        }
+
+        return false;
     }
 
     /**
