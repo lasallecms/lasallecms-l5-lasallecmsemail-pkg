@@ -75,6 +75,16 @@ Route::group(array('prefix' => 'email'), function() {
     ]);
 });
 
+Route::group(array('prefix' => 'customercare'), function() {
+    Route::get('displayorders', [
+        'as'   => 'FrontendCustomerCareDashboard',
+        'uses' => 'FrontendCustomerCareDashboardController@displayAllAlternatesortstring1Links'
+    ]);
+
+    Route::get('displayorderupdates/{alternatesortstring1}',
+        'FrontendCustomerCareDashboardController@displaySingleAlternatesortstring1');
+});
+
 
 // Admin routes
 Route::group(array('prefix' => 'admin'), function()
