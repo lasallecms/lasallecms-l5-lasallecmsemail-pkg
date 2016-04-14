@@ -65,13 +65,20 @@
 // Front end routes
 Route::group(array('prefix' => 'email'), function() {
 
+    // Standard inbound processing
     Route::post('inboundemailstandardhandling', [
         'as'   => 'inboundEmailMailgunController',
         'uses' => 'inboundEmailMailgunController@inboundStandardHandling'
-        //'uses' => 'CustomInboundEmailMailgunController@inboundStandardHandling'
+    ]);
+
+    // A custom inbound processing
+    Route::post('inboundemailcustomhandling', [
+        'as'   => 'inboundEmailMailgunController',
+        'uses' => 'CustomInboundEmailMailgunController@inboundStandardHandling'
     ]);
 });
 
+// This route is for the custom inbound handling... that the uploaded pics are viewable by logged in customers
 Route::group(array('prefix' => 'customercare'), function() {
     Route::get('displayorders', [
         'as'   => 'FrontendCustomerCareDashboard',
