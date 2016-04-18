@@ -190,7 +190,6 @@ class MailgunInboundWebhookProcessing
         return false;
     }
 
-
     /**
      * Does the mapped user actually exist in the "users" db table?
      *
@@ -293,6 +292,50 @@ class MailgunInboundWebhookProcessing
     }
 
     /**
+     * Did the attachments successfully upload to the local server's /tmp/ folder?
+     *
+     * @return bool
+     */
+    public function verifyAttachmentUploadToTmpFolder() {
+
+        $numberOfAttachments = $this->request->input('attachment-count');
+
+        for ($i = 1; $i <= $numberOfAttachments; $i++) {
+
+            if (!$this->request->file('attachment-'.$i)->isValid()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * All attachments have approved file extensions?
+     *
+     * @return bool
+     */
+    public function attachmentsHaveApprovedFileExtensions() {
+
+        $numberOfAttachments = $this->request->input('attachment-count');
+        $approvedFileExtensions = config('lasallecrmemail.inbound_attachments_approved_file_extensions');
+
+        if (empty($approvedFileExtensions)) {
+            return true;
+        }
+
+        for ($i = 1; $i <= $numberOfAttachments; $i++) {
+            $fileExtension = strtolower($this->request->file('attachment-'.$i)->getClientOriginalExtension());
+
+            if (!in_array($fileExtension, $approvedFileExtensions)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Process attachments
      *
      * @param  int   $emailMessageID    The ID of the just inserted "email_messages" record
@@ -308,10 +351,9 @@ class MailgunInboundWebhookProcessing
         for ($i = 1; $i <= $numberOfAttachments; $i++) {
             $data = $this->prepareAttachmentDataForInsert($emailMessageID, $i, $attachmentPath, $input);
             $this->email_attachmentRepository->insertNewRecord($data);
-        }
 
-        // Upload
-        $this->request->file('attachment-'.$i)->move($attachmentPath, $this->request->file('attachment-'.$i)->getClientOriginalName());
+            $this->request->file('attachment-'.$i)->move($attachmentPath, $this->request->file('attachment-'.$i)->getClientOriginalName());
+        }
     }
 
     /**
@@ -327,21 +369,21 @@ class MailgunInboundWebhookProcessing
         $data = [];
         $data['email_messages_id']   = $emailMessageID;
         $data['attachment_path']     = $attachmentPath;
-        $data['attachment_filename'] = $this->request ->file('attachment-'.$attachment)->getClientOriginalName();
+        $data['attachment_filename'] = $this->request->file('attachment-'.$attachment)->getClientOriginalName();
 
-        if ($input['alternate_sort_string1']) {
+        if (!empty($input['alternate_sort_string1'])) {
             $data['alternate_sort_string1'] = $input['alternate_sort_string1'];
         } else {
             $data['alternate_sort_string1'] = null;
         }
 
-        if ($input['alternate_sort_string2']) {
+        if (!empty($input['alternate_sort_string2'])) {
             $data['alternate_sort_string2'] = $input['alternate_sort_string2'];
         } else {
             $data['alternate_sort_string2'] = null;
         }
 
-        if ($input['comments']) {
+        if (!empty($input['comments'])) {
             $data['comments']         = $input['comments'];
         } else {
             $data['comments']         = null;

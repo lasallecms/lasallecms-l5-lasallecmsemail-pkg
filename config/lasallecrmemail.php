@@ -86,5 +86,23 @@ return [
         'Lely@emailtx.southlasalle.com' => 'krugerbloom@rogers.com'
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Approved file extensions for attachments
+    |--------------------------------------------------------------------------
+    |
+    | Upload only files with these extensions.
+    |
+    | Lowercase only.
+    |
+    | To upload all file extensions, leave this array empty.
+    |
+    */
+    'inbound_attachments_approved_file_extensions' => [
+        'jpg',
+        'png',
+        'gif',
+    ],
+
 ];
 

@@ -73,8 +73,8 @@ Route::group(array('prefix' => 'email'), function() {
 
     // A custom inbound processing
     Route::post('inboundemailcustomhandling', [
-        'as'   => 'inboundEmailMailgunController',
-        'uses' => 'CustomInboundEmailMailgunController@inboundStandardHandling'
+        'as'   => 'inboundEmailCustomMailgunController',
+        'uses' => 'CustomInboundEmailMailgunController@inboundCustomHandling'
     ]);
 });
 
@@ -101,13 +101,12 @@ Route::group(array('prefix' => 'admin'), function()
 });
 
 
-/*
+
 // Front end test routes
 Route::get('tests/inboundMailgunWebhook', [
     'as'   => 'test.inboundMailgunWebhook',
     'uses' => 'Tests\InboundMailgunWebhookTest@testViewInboundMailgunWebhook'
 ]);
-*/
 
 
 

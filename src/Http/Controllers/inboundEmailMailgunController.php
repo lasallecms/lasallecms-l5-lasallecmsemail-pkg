@@ -181,12 +181,38 @@ class inboundEmailMailgunController extends Controller
             return response('Invalid signature.', 406);
         }
 
+        // If there are attachments, did the upload to the /tmp/ folder succeed?
+        if  ($request->input('attachment-count') > 0)  {
+
+            if (!$this->mailgunInboundWebhookProcessing->verifyAttachmentUploadToTmpFolder()) {
+
+                // Send an email back to sender that this email is rejected
+                $message = "Your email has been rejected because your attachment(s) did not successfully upload to the local /tmp/ folder.";
+                $this->genericEmailProcessing->sendEmailNotificationToSender($message);
+
+                // send response to Mailgun
+                return response('Invalid sender.', 406);
+            }
+        }
+
+
+        // The atachments must be pre-authorized extensions
+        if (!$this->mailgunInboundWebhookProcessing->attachmentsHaveApprovedFileExtensions()) {
+
+            // send an email back to sender that this email is rejected
+            $message = "RE: ".$this->getSubject().".  Your email has been rejected because at least one attachment is not approved";
+            $this->genericEmailProcessing->sendEmailNotificationToSender($message);
+
+            // send response to Mailgun
+            return response('Invalid sender.', 406);
+        }
+
+
         // Are we checking that the inbound email is from a pre-approved sender? If so, do the check.
         if (!$this->genericEmailProcessing->emailsComeFromListOfApprovedSenders($request->input('sender'))) {
 
-            // sender is not on the list of pre-approved senders
-
-            // send an email back to sender that this email is rejected
+            // Sender is not on the list of pre-approved senders.
+            // Send an email back to sender that this email is rejected
             $message = "Your email has been rejected because you are not a pre-approved sender";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 

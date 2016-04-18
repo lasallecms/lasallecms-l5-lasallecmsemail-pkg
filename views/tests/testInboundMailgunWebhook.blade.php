@@ -42,7 +42,11 @@
                 <div class="col-md-3"></div>
 
                 <div class="col-md-9">
-                    {!! Form::open(['route' => 'inboundEmailMailgunController']) !!}
+                    {!! Form::open([
+                    //'route' => 'inboundEmailMailgunController',
+                    'route' => 'inboundEmailCustomMailgunController',
+                    'files' => true,
+                    ]) !!}
 
                         <tr><td colspan="2"></td></tr>
 
@@ -54,8 +58,6 @@
                                 {{-- Hidden fields --}}
 
                                 <input name="email" type="hidden" value="krugerbloom@rogers.com">
-
-                                    <input name="attachment-count" type="hidden" value="1">
 
                                 <input name="body-plain" type="hidden" value="comments There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the end. comments -- ------------------------------------------------------------------------------------ Bob Bloom Create your own custom web app with my FOSS LaSalle Software, based on the wonderful Laravel Framework. SouthLaSalle.com krugerbloom@gmail.com Email Disclaimer: This email communication is confidential. If you are not the intended recipient, please notify me by return email and delete this communication and any copy.">
 
@@ -74,9 +76,25 @@
 
                                 <input name="token" type="hidden" value="0a080d77b986a00487f7a41c3647182f3d5f7c9bce21824340">
 
-                                <input name="attachment-count" type="hidden" value="2">
-                                <input name="attachment-1" type="hidden" value="/tmp/phpGcpwb3">
+                                <input name="attachment-count" type="hidden" value="1">
 
+
+                            </td>
+                        </tr>
+                    <tr><td colspan="2"><hr></td></tr>
+                    <tr>
+                        <td>
+                            FILE UPLOAD!!
+                        </td>
+                        <td>
+                            <input id="attachment-1" name="attachment-1" type="file">
+                        </td>
+                    </tr>
+
+                    <tr><td colspan="2"><hr></td></tr>
+
+                    <tr>
+                        <td>
                                 {{-- Submit and cancel buttons --}}
                                 {!! Form::submit( 'TEST!' ) !!}
 
