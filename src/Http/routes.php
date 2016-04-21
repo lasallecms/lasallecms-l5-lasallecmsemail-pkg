@@ -103,10 +103,12 @@ Route::group(array('prefix' => 'admin'), function()
 
 
 // Front end test routes
+/*
 Route::get('tests/inboundMailgunWebhook', [
     'as'   => 'test.inboundMailgunWebhook',
     'uses' => 'Tests\InboundMailgunWebhookTest@testViewInboundMailgunWebhook'
 ]);
+*/
 
 
 
