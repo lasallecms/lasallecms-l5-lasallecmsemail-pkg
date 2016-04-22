@@ -181,17 +181,18 @@ class inboundEmailMailgunController extends Controller
             return response('Invalid signature.', 406);
         }
 
+
         // If there are attachments, did the upload to the /tmp/ folder succeed?
         if  ($request->input('attachment-count') > 0)  {
 
             if (!$this->mailgunInboundWebhookProcessing->verifyAttachmentUploadToTmpFolder()) {
 
                 // Send an email back to sender that this email is rejected
-                $message = "Your email has been rejected because your attachment(s) did not successfully upload to the local /tmp/ folder.";
+                $message = "RE: \".$this->mailgunInboundWebhookProcessing->getSubject().\".  Your email has been rejected because your attachment(s) did not successfully upload to the local /tmp/ folder.";
                 $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
                 // send response to Mailgun
-                return response('Invalid sender.', 406);
+                return response('Attachments failed to upload to the local /tmp/ folder.', 406);
             }
         }
 
@@ -200,25 +201,43 @@ class inboundEmailMailgunController extends Controller
         if (!$this->mailgunInboundWebhookProcessing->attachmentsHaveApprovedFileExtensions()) {
 
             // send an email back to sender that this email is rejected
-            $message = "RE: ".$this->getSubject().".  Your email has been rejected because at least one attachment is not approved";
+            $message = "RE: ".$this->mailgunInboundWebhookProcessing->getSubject().".  Your email has been rejected because at least one attachment has an unapproved file extension.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid sender.', 406);
+            return response('At least one attachment has an unapproved file extension.', 406);
         }
 
 
-        // Are we checking that the inbound email is from a pre-approved sender? If so, do the check.
+        // Inbound email is from a pre-approved sender
         if (!$this->genericEmailProcessing->emailsComeFromListOfApprovedSenders($request->input('sender'))) {
 
             // Sender is not on the list of pre-approved senders.
             // Send an email back to sender that this email is rejected
-            $message = "Your email has been rejected because you are not a pre-approved sender";
+            $message = "RE: ".$this->mailgunInboundWebhookProcessing->getSubject().".  Your email has been rejected because you are not a pre-approved sender";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid sender.', 406);
+            return response('Person who sent email is not an approved sender.', 406);
         }
+
+
+        //-------------------------------------------------------------
+        // If there are attachments, did the upload to the /tmp/ folder succeed?
+        //-------------------------------------------------------------
+        if  ($this->request->input('attachment-count') > 0)  {
+
+            if (!$this->mailgunInboundWebhookProcessing->verifyAttachmentUploadToTmpFolder()) {
+
+                // Send an email back to sender that this email is rejected
+                $message = "RE: ".$this->mailgunInboundWebhookProcessing->getSubject().".  Your email has been rejected because your attachment(s) did not successfully upload to the local /tmp/ folder.";
+                $this->genericEmailProcessing->sendEmailNotificationToSender($message);
+
+                // send response to Mailgun
+                return response('Attachment(s) did not successfully upload to the local /tmp/ folder.', 406);
+            }
+        }
+
 
         // Does the Mailgun route map to a user?
         if (!$this->mailgunInboundWebhookProcessing->isInboundEmailToEmailAddressMapToUser()) {
@@ -226,17 +245,24 @@ class inboundEmailMailgunController extends Controller
             // "To" is not mapped to a user
 
             // send an email back to sender that this email is rejected
-            $message = "Your email has been rejected because your recipient is not allowed";
+            $message = "RE: ".$this->mailgunInboundWebhookProcessing->getSubject().".  Your email has been rejected because the email address you used is not approved.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid recipient.', 406);
+            return response('The email address you used is not approved.', 406);
         }
+
 
         // Does the mapped user actually exist in the "users" db table?
         if (!$this->mailgunInboundWebhookProcessing->isMappedUserExistInUsersTable()) {
-            return response('Invalid sender.', 406);
+            // send an email back to sender that this email is rejected
+            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because you do not exist as a web application user.";
+            $this->genericEmailProcessing->sendEmailNotificationToSender($message);
+
+            // send response to Mailgun
+            return response('Person who sent email does not exist as a web application user.', 406);
         }
+
 
         // build the data for INSERT into email_messages
         // do up a new "message_headers" field
@@ -247,7 +273,7 @@ class inboundEmailMailgunController extends Controller
         $savedOk = $this->repository->insertNewRecord($data);
 
         if (!$savedOk) {
-             $message = "Your email to ".$request->input('recipient')."was not successfully processed";
+             $message = "RE: ".$this->mailgunInboundWebhookProcessing->getSubject().".  Your email to ".$request->input('recipient')."was not successfully processed";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
             return response('Invalid processing.', 406);
         }

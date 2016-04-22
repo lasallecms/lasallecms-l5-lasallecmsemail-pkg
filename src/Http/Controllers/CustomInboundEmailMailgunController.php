@@ -226,7 +226,7 @@ class CustomInboundEmailMailgunController extends Controller
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid sender.', 406);
+            return response('No attachments.', 406);
         }
 
         //-------------------------------------------------------------
@@ -235,16 +235,15 @@ class CustomInboundEmailMailgunController extends Controller
         if (!$this->mailgunInboundWebhookProcessing->attachmentsHaveApprovedFileExtensions()) {
 
             // send an email back to sender that this email is rejected
-            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because at least one attachment is not approved";
+            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because at least one attachment has an unapproved file extension.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid attachments.', 406);
+            return response('At least one attachment has an unapproved file extension.', 406);
         }
 
         //-------------------------------------------------------------
-        // Are we checking that the inbound email is from a pre-approved sender? If so, do the check.
-        // The sender is an employee, who must have a record in the "users" table
+        // Inbound email is from a pre-approved sender
         //-------------------------------------------------------------
         if (!$this->genericEmailProcessing->emailsComeFromListOfApprovedSenders($this->request->input('sender'))) {
 
@@ -254,7 +253,7 @@ class CustomInboundEmailMailgunController extends Controller
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid sender.', 406);
+            return response('Person who sent email is not an approved sender.', 406);
         }
 
         //-------------------------------------------------------------
@@ -269,7 +268,7 @@ class CustomInboundEmailMailgunController extends Controller
                 $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
                 // send response to Mailgun
-                return response('Attachment upload failed.', 406);
+                return response('Attachment(s) did not successfully upload to the local /tmp/ folder.', 406);
             }
         }
 
@@ -281,11 +280,11 @@ class CustomInboundEmailMailgunController extends Controller
 
             // "To" is not mapped to a user
             // send an email back to sender that this email is rejected
-            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because your email address is not an approved sender.";
+            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because the email address you used is not approved.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid recipient.', 406);
+            return response('The email address you used is not approved.', 406);
         }
 
         //-------------------------------------------------------------
@@ -295,11 +294,11 @@ class CustomInboundEmailMailgunController extends Controller
         if (!$this->mailgunInboundWebhookProcessing->isMappedUserExistInUsersTable()) {
 
             // send an email back to sender that this email is rejected
-            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because your email address is not an approved sender.";
+            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because you do not exist as a web application user.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid sender.', 406);
+            return response('Person who sent email does not exist as a web application user.', 406);
         }
 
 
@@ -319,7 +318,7 @@ class CustomInboundEmailMailgunController extends Controller
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid subject line.', 406);
+            return response('Empty subject line.', 406);
         }
 
         //-------------------------------------------------------------
@@ -333,17 +332,17 @@ class CustomInboundEmailMailgunController extends Controller
         $input['comments'] = $this->customInboundProcessing->parseComments();
 
         //-------------------------------------------------------------
-        // Is the parsed user ID empty or not an integer?
+        // Is the parsed user ID empty?
         // (http://php.net/manual/en/function.is-int.php)
         //-------------------------------------------------------------
         if (empty($input['userID'])) {
-dd("not ok");
+
             // send an email back to sender that this email is rejected
             $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because the customer number in the subject line is not specified.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid recipient.', 406);
+            return response('The customer number in the subject line is not specified.', 406);
         }
 
         //-------------------------------------------------------------
@@ -356,7 +355,7 @@ dd("not ok");
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid order number.', 406);
+            return response('The order number in the subject line is not specified.', 406);
         }
 
         //-------------------------------------------------------------
@@ -365,11 +364,11 @@ dd("not ok");
         if (!$this->customInboundProcessing->isOrdernumberInCustomordernumberTable($input['orderNumber'])) {
 
             // send an email back to sender that this email is rejected
-            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because the order number in the subject line is not specified.";
+            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because the order number specified in the subject line does not exist in the web application.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid order number.', 406);
+            return response('The order number specified in the subject line does not exist in the web application.', 406);
         }
 
         //-------------------------------------------------------------
@@ -378,11 +377,11 @@ dd("not ok");
         if (!$this->customInboundProcessing->isCustomerInUsersTable($input['userID'])) {
 
             // send an email back to sender that this email is rejected
-            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because the customer assigned as ".$input['userID']." is *not* set up as a user.";
+            $message = "RE: ".$this->customInboundProcessing->getSubject().".  Your email has been rejected because the customer assigned as ".$input['userID']." in the subject line is *not* set up as a web application user.";
             $this->genericEmailProcessing->sendEmailNotificationToSender($message);
 
             // send response to Mailgun
-            return response('Invalid recipient.', 406);
+            return response('The customer assigned as ".$input[\'userID\']." in the subject line is *not* set up as a web application user.', 406);
         }
 
 

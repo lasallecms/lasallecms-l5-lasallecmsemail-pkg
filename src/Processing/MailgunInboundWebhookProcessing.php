@@ -37,6 +37,7 @@ namespace Lasallecrm\Lasallecrmemail\Processing;
 use Lasallecms\Lasallecmsapi\Repositories\Traits\PrepareForPersist;
 use Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
+use Lasallecrm\Lasallecrmemail\Processing\BaseProcessing;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -51,7 +52,7 @@ use Carbon\Carbon;
  * Class MailgunInboundWebhookProcessing
  * @package Lasallecrm\Lasallecrmemail\Processing
  */
-class MailgunInboundWebhookProcessing
+class MailgunInboundWebhookProcessing extends BaseProcessing
 {
     use PrepareForPersist;
 

@@ -35,6 +35,7 @@ namespace Lasallecrm\Lasallecrmemail\Processing;
 
 // LaSalle Software
 use Lasallecms\Lasallecmsapi\Repositories\Traits\PrepareForPersist;
+use Lasallecrm\Lasallecrmemail\Processing\BaseProcessing;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ use Carbon\Carbon;
  * Class CustomInboundProcessing
  * @package Lasallecrm\Lasallecrmemail\Http\Controllers
  */
-class CustomInboundProcessing
+class CustomInboundProcessing extends BaseProcessing
 {
     use PrepareForPersist;
 
@@ -182,14 +183,5 @@ class CustomInboundProcessing
         $data['locked_by']          = null;
 
         return $data;
-    }
-
-    /**
-     * Get the concatenated subject line
-     *
-     * @return string
-     */
-    public function getSubject() {
-        return $this->request->input('subject') . " " . Carbon::now()->toDateTimeString();
     }
 }
