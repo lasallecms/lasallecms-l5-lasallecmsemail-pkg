@@ -265,7 +265,7 @@ class inboundEmailMailgunController extends Controller
 
 
         // Process attachments
-        if ($request->input('attachment-count')) {
+        if ($request->has('attachment-count')) {
 
             // $savedOk returns the ID of the recently INSERTed record
             $this->mailgunInboundWebhookProcessing->processAttachments($savedOk);
