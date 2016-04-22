@@ -182,21 +182,6 @@ class inboundEmailMailgunController extends Controller
         }
 
 
-        // If there are attachments, did the upload to the /tmp/ folder succeed?
-        if  ($request->input('attachment-count') > 0)  {
-
-            if (!$this->mailgunInboundWebhookProcessing->verifyAttachmentUploadToTmpFolder()) {
-
-                // Send an email back to sender that this email is rejected
-                $message = "RE: \".$this->mailgunInboundWebhookProcessing->getSubject().\".  Your email has been rejected because your attachment(s) did not successfully upload to the local /tmp/ folder.";
-                $this->genericEmailProcessing->sendEmailNotificationToSender($message);
-
-                // send response to Mailgun
-                return response('Attachments failed to upload to the local /tmp/ folder.', 406);
-            }
-        }
-
-
         // The atachments must be pre-authorized extensions
         if (!$this->mailgunInboundWebhookProcessing->attachmentsHaveApprovedFileExtensions()) {
 
@@ -225,7 +210,7 @@ class inboundEmailMailgunController extends Controller
         //-------------------------------------------------------------
         // If there are attachments, did the upload to the /tmp/ folder succeed?
         //-------------------------------------------------------------
-        if  ($this->request->input('attachment-count') > 0)  {
+        if  ($request->input('attachment-count') > 0)  {
 
             if (!$this->mailgunInboundWebhookProcessing->verifyAttachmentUploadToTmpFolder()) {
 
