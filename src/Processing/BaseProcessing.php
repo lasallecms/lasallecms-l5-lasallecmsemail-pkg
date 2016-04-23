@@ -33,6 +33,9 @@ namespace Lasallecrm\Lasallecrmemail\Processing;
  *
  */
 
+// Third party classes
+use Carbon\Carbon;
+
 class BaseProcessing
 {
     /**
