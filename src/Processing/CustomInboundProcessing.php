@@ -97,7 +97,8 @@ class CustomInboundProcessing extends BaseProcessing
         $comments = $this->request->input('body-plain');
         $comments = explode("comments", $comments);
 
-        return trim($comments[1]);
+        // Preface comments with the date
+        return "(".Carbon::now()->toDateTimeString().") ".trim($comments[1]);
     }
 
     /**
