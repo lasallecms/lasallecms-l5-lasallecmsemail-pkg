@@ -39,7 +39,6 @@ use Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing;
 use Lasallecrm\Lasallecrmemail\Processing\CustomInboundProcessing;
 use Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing;
 use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
-use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
 use Lasallecrm\Lasallecrmemail\LoginToken\CreateLoginToken;
 use Lasallecrm\Lasallecrmemail\LoginToken\SendLoginTokenEmail;
 
@@ -139,11 +138,6 @@ class CustomInboundEmailMailgunController extends Controller
     protected $repository;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository
-     */
-    protected $email_attachmentrepository;
-
-    /**
      * @var Lasallecrm\Lasallecrmemail\Logintoken\CreateLoginToken;
      */
     protected $createLoginToken;
@@ -161,7 +155,6 @@ class CustomInboundEmailMailgunController extends Controller
      * @param Lasallecrm\Lasallecrmemail\Processing\GenericEmailProcessing           $genericEmailProcessing
      * @param Lasallecrm\Lasallecrmemail\Processing\CustomInboundProcessing          $customInboundProcessing
      * @param Email_messageRepository                                                $repository
-     * @param Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository     $email_attachmentRepository
      * @param Lasallecrm\Lasallecrmemail\Logintoken\CreateLoginToken                 $createLoginToken
      * @param Lasallecrm\Lasallecrmemail\Logintoken\SendLoginTokenEmail              $sendLoginTokenEmail
      */
@@ -171,7 +164,6 @@ class CustomInboundEmailMailgunController extends Controller
         GenericEmailProcessing           $genericEmailProcessing,
         CustomInboundProcessing          $customInboundProcessing,
         Email_messageRepository          $repository,
-        Email_attachmentRepository       $email_attachmentRepository,
         CreateLoginToken                 $createLoginToken,
         SendLoginTokenEmail              $sendLoginTokenEmail
     ) {
@@ -180,7 +172,6 @@ class CustomInboundEmailMailgunController extends Controller
         $this->genericEmailProcessing          = $genericEmailProcessing;
         $this->customInboundProcessing         = $customInboundProcessing;
         $this->repository                      = $repository;
-        $this->email_attachmentrepository      = $email_attachmentRepository;
         $this->createLoginToken                = $createLoginToken;
         $this->sendLoginTokenEmail             = $sendLoginTokenEmail;
     }

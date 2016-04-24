@@ -79,10 +79,12 @@ class Email_attachmentRepository extends BaseRepository
 
         $emailAttachment = new Email_attachment;
 
-        $emailAttachment->email_messages_id   = $data['email_messages_id'];
-        $emailAttachment->attachment_path     = $data['attachment_path'];
-        $emailAttachment->attachment_filename = $data['attachment_filename'];
-        $emailAttachment->comments            = $data['comments'];
+        $emailAttachment->email_messages_id          = $data['email_messages_id'];
+        $emailAttachment->attachment_path            = $data['attachment_path'];
+        $emailAttachment->attachment_filename        = $data['attachment_filename'];
+        $emailAttachment->alternate_sort_string1     = $data['alternate_sort_string1'];
+        $emailAttachment->alternate_sort_string2     = $data['alternate_sort_string2'];
+        $emailAttachment->comments                   = $data['comments'];
 
         return $emailAttachment->save();
     }
