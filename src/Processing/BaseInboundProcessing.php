@@ -87,7 +87,7 @@ class BaseInboundProcessing
     public function __construct(
         Email_messageRepository       $email_messageRespository,
         Email_attachmentRepository    $email_attachmentRepository,
-        UserTokenbasedloginRepository $userTokenbasedloginRepository.
+        UserTokenbasedloginRepository $userTokenbasedloginRepository,
         SendLoginTokenEmail           $sendLoginTokenEmail
     ) {
         $this->email_messageRespository      = $email_messageRespository;
