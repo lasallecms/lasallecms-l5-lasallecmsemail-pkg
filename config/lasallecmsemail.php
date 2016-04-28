@@ -65,5 +65,20 @@ return [
         'gif',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Inbound emails from these senders only
+    |--------------------------------------------------------------------------
+    |
+    | Optionally allow inbound emails from these senders only.
+    |
+    | For Mailgun, it is the email specified in the "senders" post var.
+    |
+    */
+    'inbound_emails_from_allowed_senders_only' => true,
+
+    'inbound_emails_from_allowed_senders_only_list_of_senders' => [
+        'info@southlasalle.com',
+    ],
 ];
 
