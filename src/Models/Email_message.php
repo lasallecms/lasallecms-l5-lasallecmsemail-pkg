@@ -134,7 +134,7 @@ class Email_message extends BaseModel
      *
      * @var string
      */
-    public $namespace_formprocessor = 'Lasallecrm\Lasallecrmemail\Processing';
+    public $namespace_formprocessor = 'Lasallecms\Lasallecmsemail\Processing';
 
     /*
      * Namespace and class name of the DELETE (DESTROY) Form Processor command
