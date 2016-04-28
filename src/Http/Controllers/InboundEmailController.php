@@ -34,10 +34,10 @@ namespace Lasallecms\Lasallecmsemail\Http\Controllers;
  */
 
 // LaSalle Software
-use Lasallecrm\Lasallecrmemail\Processing\BaseInboundProcessing;
+use Lasallecms\Lasallecmsemail\Processing\BaseInboundProcessing;
 use Lasallecms\Lasallecmsmailgun\Processing\MapMailgunPostVariables;
 use Lasallecms\Lasallecmsmailgun\Processing\Validation as MailgunValidation;
-use Lasallecrm\Lasallecrmemail\Validation\Validation;
+use Lasallecms\Lasallecmsemail\Validation\Validation;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -87,7 +87,7 @@ class InboundEmailController extends Controller
      *  email_attachments field       Mailgun parsed post var
      *  -----------------------      ------------------------
      *   email_messages_id            "email_messages" db table's ID
-     *   attachment_path              config('lasallecrmemail.attachment_path')
+     *   attachment_path              config('lasallecmsemail.attachment_path')
      *   attachment_filename          getClientOriginalName(attachment-1)
      *
      * $request->file('photo')->move(public_path().'/'.$attachment_path, $fileName);
@@ -108,7 +108,7 @@ class InboundEmailController extends Controller
     protected $failResponseCode = 406;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Processing\BaseInboundProcessing
+     * @var Lasallecms\Lasallecmsemail\Processing\BaseInboundProcessing
      */
     protected $baseInboundProcessing;
 
@@ -123,7 +123,7 @@ class InboundEmailController extends Controller
     protected $mailgunValidation;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Validation\Validation
+     * @var Lasallecms\Lasallecmsemail\Validation\Validation
      */
     protected $validation;
 
@@ -131,10 +131,10 @@ class InboundEmailController extends Controller
     /**
      * InboundEmailController constructor.
      *
-     * @param Lasallecrm\Lasallecrmemail\Processing\BaseInboundProcessing                $baseInboundProcessing
+     * @param Lasallecms\Lasallecmsemail\Processing\BaseInboundProcessing                $baseInboundProcessing
      * @param Lasallecms\Lasallecmsmailgun\Processing\MapMailgunPostVariables            $mapMailgunPostVariables
      * @param Lasallecms\Lasallecmsmailgun\Processing\Validation                         $mailgunValidation
-     * @param Lasallecrm\Lasallecrmemail\Validation\Validation                           $validation
+     * @param Lasallecms\Lasallecmsemail\Validation\Validation                           $validation
      */
     public function __construct(
         BaseInboundProcessing    $baseInboundProcessing,

@@ -149,7 +149,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
 
         $records = $this->repository->getEmailMessagesForAdminIndex(Auth::user()->id);
 
-        return view('lasallecrmemail::admin/emailhandling/index',
+        return view('lasallecmsemail::admin/emailhandling/index',
             [
                 'records'                      => $records,
                 'package_title'                => $this->model->package_title,
@@ -185,7 +185,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
             ]);
         }
 
-        return view('lasallecrmemail::admin/emailhandling/create',
+        return view('lasallecmsemail::admin/emailhandling/create',
         [
             'user'                             => Auth::user(),
             'repository'                       => $this->repository,
@@ -273,7 +273,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
         // Mark this email as read
         $this->repository->markEmailAsRead($id);
 
-        return view('lasallecrmemail::admin/emailhandling/show',
+        return view('lasallecmsemail::admin/emailhandling/show',
             [
                 'record'                       => $this->repository->getFind($id),
                 'records_attachments'          => $this->email_attachmentRepository->getEmailAttachmentsForAdminShow($id),
@@ -326,7 +326,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
         // Lock the record
         $this->repository->populateLockFields($id);
 
-        return view('lasallecrmemail::admin/emailhandling/edit',
+        return view('lasallecmsemail::admin/emailhandling/edit',
             [
                 'user'                         => Auth::user(),
                 'repository'                   => $this->repository,
