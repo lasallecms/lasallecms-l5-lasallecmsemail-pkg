@@ -39,10 +39,10 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 
 
 /**
- * Class LasallecrmemailEventServiceProvider
+ * Class LasallecmsemailEventServiceProvider
  * @package Lasallecms\Usermanagement
  */
-class LasallecrmemailEventServiceProvider extends ServiceProvider
+class LasallecmsemailEventServiceProvider extends ServiceProvider
 {
     /**
      * The event listener mappings for the application.
