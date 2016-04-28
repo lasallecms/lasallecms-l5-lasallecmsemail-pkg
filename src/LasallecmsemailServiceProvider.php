@@ -42,7 +42,7 @@ use Illuminate\Support\ServiceProvider;
  *
  * @author Bob Bloom <info@southlasalle.com>
  */
-class LasallecrmemailServiceProvider extends ServiceProvider {
+class LasallecmsemailServiceProvider extends ServiceProvider {
 
     /**
      * Indicates if loading of the provider is deferred.
