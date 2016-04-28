@@ -38,7 +38,7 @@ namespace Lasallecms\Lasallecmsemail\Http\Controllers\Tests;
 use Lasallecms\Helpers\Dates\DatesHelper;
 use Lasallecms\Helpers\HTML\HTMLHelper;
 
-use Lasallecrm\Lasallecrmemail\Models\Email_message;
+use Lasallecms\Lasallecmsemail\Models\Email_message;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -77,7 +77,7 @@ class InboundMailgunWebhookTest extends Controller
 
     public function testViewInboundMailgunWebhook() {
 
-        return view('lasallecrmemail::tests/testInboundMailgunWebhook', [
+        return view('lasallecmsemail::tests/testInboundMailgunWebhook', [
 
             'package_title'                => $this->email_message_model->package_title,
             'resource_route_name'          => $this->email_message_model->resource_route_name,
