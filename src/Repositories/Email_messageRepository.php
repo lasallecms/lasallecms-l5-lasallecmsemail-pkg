@@ -35,7 +35,7 @@ namespace Lasallecms\Lasallecmsemail\Repositories;
 
 // LaSalle Software
 use Lasallecms\Lasallecmsapi\Repositories\BaseRepository;
-use Lasallecrm\Lasallecrmemail\Models\Email_message;
+use Lasallecms\Lasallecmsemail\Models\Email_message;
 
 /**
  * Class Email_messageRepository
@@ -46,7 +46,7 @@ class Email_messageRepository extends BaseRepository
     /**
      * Instance of model
      *
-     * @var Lasallecms\Lasallecrmemail\Models\Email_message
+     * @var Lasallecms\Lasallecmsemail\Models\Email_message
      */
     protected $model;
 
@@ -54,7 +54,7 @@ class Email_messageRepository extends BaseRepository
     /**
      * Inject the model
      *
-     * @param  Lasallecms\Lasallecrmemail\Models\Email_message
+     * @param  Lasallecms\Lasallecmsemail\Models\Email_message
      */
     public function __construct(Email_message $model) {
         $this->model = $model;

@@ -37,7 +37,7 @@ namespace Lasallecms\Lasallecmsemail\Processing;
 
 // LaSalle Software
 use Lasallecms\Lasallecmsapi\Repositories\Traits\PrepareForPersist;
-use Lasallecrm\Lasallecrmemail\Models\Email_message;
+use Lasallecms\Lasallecmsemail\Models\Email_message;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -66,7 +66,7 @@ class AdminEmailProcessing
     protected $request;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Models\Email_message
+     * @var Lasallecms\Lasallecmsemail\Models\Email_message
      */
     protected $email_message;
 
@@ -217,7 +217,7 @@ class AdminEmailProcessing
         $data = $this->prepEmailData($id);
 
         // What blade file to use?
-        $emailBladeFile = 'lasallecrmemail::email.send_email';
+        $emailBladeFile = 'lasallecmsemail::email.send_email';
 
         // Send da email
         Mail::queue($emailBladeFile, ['data' => $data], function ($message) use ($data) {

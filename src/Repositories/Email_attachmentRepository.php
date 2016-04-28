@@ -35,7 +35,7 @@ namespace Lasallecms\Lasallecmsemail\Repositories;
 
 // LaSalle Software
 use Lasallecms\Lasallecmsapi\Repositories\BaseRepository;
-use Lasallecrm\Lasallecrmemail\Models\Email_attachment;
+use Lasallecms\Lasallecmsemail\Models\Email_attachment;
 
 /**
  * Class Email_attachmentRepository
@@ -46,7 +46,7 @@ class Email_attachmentRepository extends BaseRepository
     /**
      * Instance of model
      *
-     * @var Lasallecrm\Lasallecrmemail\Models\Email_attachment
+     * @var Lasallecms\Lasallecmsemail\Models\Email_attachment
      */
     protected $model;
 
@@ -54,7 +54,7 @@ class Email_attachmentRepository extends BaseRepository
     /**
      * Inject the model
      *
-     * @param  Lasallecms\Lasallecrmemail\Models\Email_attachment
+     * @param  Lasallecms\Lasallecmsemail\Models\Email_attachment
      */
     public function __construct(Email_attachment $model) {
         $this->model = $model;

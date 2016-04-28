@@ -123,7 +123,7 @@ class LasallecmsemailServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $this->registerLasallecrmemail();
+        $this->registerLasallecmsemail();
     }
 
 
@@ -132,9 +132,9 @@ class LasallecmsemailServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    private function registerLasallecrmemail() {
+    private function registerLasallecmsemail() {
         $this->app->bind('todo', function($app) {
-            return new Lasallecrmemail($app);
+            return new Lasallecmsemail($app);
         });
     }
 
@@ -146,7 +146,7 @@ class LasallecmsemailServiceProvider extends ServiceProvider {
      * @return void
      */
     public function setupRoutes(Router $router) {
-        $router->group(['namespace' => 'Lasallecrm\Lasallecrmemail\Http\Controllers'], function($router)
+        $router->group(['namespace' => 'Lasallecms\Lasallecmsemail\Http\Controllers'], function($router)
         {
             require __DIR__.'/Http/routes.php';
         });
@@ -159,10 +159,10 @@ class LasallecmsemailServiceProvider extends ServiceProvider {
      * @return void
      */
     public function setupViews() {
-        $this->loadViewsFrom(__DIR__.'/../views', 'lasallecrmemail');
+        $this->loadViewsFrom(__DIR__.'/../views', 'lasallecmsemail');
 
         $this->publishes([
-            __DIR__.'/../views' => base_path('resources/views/vendor/lasallecrmemail'),
+            __DIR__.'/../views' => base_path('resources/views/vendor/lasallecmsemail'),
         ]);
     }
 
@@ -173,7 +173,7 @@ class LasallecmsemailServiceProvider extends ServiceProvider {
      * @return array
      */
     public function provides() {
-        return array('lasallecrmemail');
+        return array('lasallecmsemail');
     }
 
 
@@ -185,10 +185,11 @@ class LasallecmsemailServiceProvider extends ServiceProvider {
      * @return void
      */
     public function bindInterfacesToImplementations() {
-
+/*
         $this->app->bind(
             'Lasallecrm\Lasallecrmemail\Contracts\InboundWebhookProcessing',
             'Lasallecrm\Lasallecrmemail\Processing\MailgunInboundWebhookProcessing'
         );
+*/
     }
 }

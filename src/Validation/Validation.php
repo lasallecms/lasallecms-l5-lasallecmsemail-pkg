@@ -48,7 +48,7 @@ class Validation
             return true;
         }
 
-        $approvedFileExtensions = config('lasallecrmemail.inbound_attachments_approved_file_extensions');
+        $approvedFileExtensions = config('lasallecmsemail.inbound_attachments_approved_file_extensions');
         if (empty($approvedFileExtensions)) {
             return true;
         }
@@ -99,7 +99,7 @@ class Validation
      * @return bool
      */
     public function isInboundEmailsFromAllowedSendersOnly() {
-        return config('lasallecrmemail.inbound_emails_from_allowed_senders_only');
+        return config('lasallecmsemail.inbound_emails_from_allowed_senders_only');
     }
 
     /**
@@ -109,7 +109,7 @@ class Validation
      * @return bool
      */
     public function isInboundEmailsFromAllowedSendersOnlyListOfSsenders($senderEmailAddress) {
-        $allowedSenders = config('lasallecrmemail.inbound_emails_from_allowed_senders_only_list_of_senders');
+        $allowedSenders = config('lasallecmsemail.inbound_emails_from_allowed_senders_only_list_of_senders');
 
         return in_array($senderEmailAddress, $allowedSenders);
     }

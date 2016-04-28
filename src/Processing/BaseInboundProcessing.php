@@ -35,8 +35,8 @@ namespace Lasallecms\Lasallecmsemail\Processing;
 
 // LaSalle Software
 use Lasallecms\Lasallecmsapi\Repositories\Traits\PrepareForPersist;
-use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
-use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
+use Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository;
+use Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository;
 use Lasallecms\Lasallecmstokenbasedlogin\Repositories\UserTokenbasedloginRepository;
 
 // Laravel facades
@@ -55,12 +55,12 @@ class BaseInboundProcessing
 
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository
+     * @var Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository
      */
     protected $email_messageRespository;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository
+     * @var Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository
      */
     protected $email_attachmentRepository;
 
@@ -73,8 +73,8 @@ class BaseInboundProcessing
     /**
      * BaseInboundProcessing constructor.
      *
-     * @param Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository                 $email_messagesRespository
-     * @param Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository              $email_attachmentRepository
+     * @param Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository                 $email_messagesRespository
+     * @param Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository              $email_attachmentRepository
      * @param Lasallecms\Lasallecmstokenbasedlogin\Repositories\UserTokenbasedloginRepository $userTokenbasedloginRepository
      */
     public function __construct(
@@ -105,7 +105,7 @@ class BaseInboundProcessing
         $data = $this->prepareNotificationEmailData($message, $mappedVars);
 
         // What blade file to use?
-        $emailBladeFile = 'lasallecrmemail::email.notification_email_to_inbound_sender';
+        $emailBladeFile = 'lasallecmsemail::email.notification_email_to_inbound_sender';
 
         // Send da email
         Mail::queue($emailBladeFile, ['data' => $data], function ($message) use ($data) {
@@ -211,7 +211,7 @@ class BaseInboundProcessing
      */
     public function processAttachments($emailMessageID, $data=null) {
 
-        $attachmentPath      = public_path() . "/".config('lasallecrmemail.attachment_path')."/";
+        $attachmentPath      = public_path() . "/".config('lasallecmsemail.attachment_path')."/";
 
         // INSERT into the "email_attachments" db table
         for ($i = 1; $i <= $data['number_of_attachments']; $i++) {

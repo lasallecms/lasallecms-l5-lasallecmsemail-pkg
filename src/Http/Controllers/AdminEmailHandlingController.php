@@ -39,12 +39,12 @@ use Lasallecms\Helpers\Dates\DatesHelper;
 use Lasallecms\Helpers\HTML\HTMLHelper;
 use Lasallecms\Helpers\Images\ImagesHelper;
 
-use Lasallecrm\Lasallecrmemail\Models\Email_message;
+use Lasallecms\Lasallecmsemail\Models\Email_message;
 
-use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
-use Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository;
+use Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository;
+use Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository;
 
-use Lasallecrm\Lasallecrmemail\Processing\AdminEmailProcessing;
+use Lasallecms\Lasallecmsemail\Processing\AdminEmailProcessing;
 
 // Laravel classes
 use Illuminate\Http\Request;
@@ -69,12 +69,12 @@ use Collective\Html\FormFacade as Form;
 class AdminEmailHandlingController extends AdminFormBaseController
 {
     /**
-     * @var Lasallecrm\Lasallecrmemail\Models\Email_message
+     * @var Lasallecms\Lasallecmsemail\Models\Email_message
      */
     protected $model;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository
+     * @var Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository
      */
     protected $repository;
 
@@ -84,7 +84,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
     protected $email_attachmentRepository;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Processing\AdminEmailProcessing
+     * @var Lasallecms\Lasallecmsemail\Processing\AdminEmailProcessing
      */
     protected $adminEmailProcessing;
 
@@ -131,6 +131,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
 
         // Is this user allowed to do this?
         if (!$this->repository->isUserAllowed('index')) {
+
             Session::flash('status_code', 400 );
             $message = "You are not allowed to view the list of ".$this->tableName;
             Session::flash('message', $message);

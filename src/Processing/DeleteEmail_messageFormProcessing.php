@@ -45,7 +45,7 @@ namespace Lasallecms\Lasallecmsemail\Processing;
 ///  DO A MODEL-SPECIFIC REPOSITORY IF NEED BE.                 ///
 ///////////////////////////////////////////////////////////////////
 // LaSalle Software
-use Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository;
+use Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository;
 use Lasallecms\Lasallecmsadmin\FormProcessing\BaseFormProcessing;
 
 
@@ -85,7 +85,7 @@ class DeleteEmail_messageFormProcessing extends BaseFormProcessing
      *
      * @var string
      */
-    protected $namespaceClassnameModel = "Lasallecrm\Lasallecrmemail\Models\Email_message";
+    protected $namespaceClassnameModel = "Lasallecms\Lasallecmsemail\Models\Email_message";
 
 
     ///////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ class DeleteEmail_messageFormProcessing extends BaseFormProcessing
     /*
      * Inject the model
      *
-     * @param  Lasallecrm\Lasallecrmemail\Repositories\Email_messageRepository
+     * @param  Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository
      */
     public function __construct(Email_messageRepository $repository) {
         $this->repository = $repository;
