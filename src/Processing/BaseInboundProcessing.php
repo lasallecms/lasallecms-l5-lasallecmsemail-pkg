@@ -38,6 +38,7 @@ use Lasallecms\Lasallecmsapi\Repositories\Traits\PrepareForPersist;
 use Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository;
 use Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository;
 use Lasallecms\Lasallecmstokenbasedlogin\Repositories\UserTokenbasedloginRepository;
+use Lasallecms\Lasallecmstokenbasedlogin\Email\SendLoginTokenEmail;
 
 // Laravel facades
 use Illuminate\Support\Facades\Mail;
@@ -69,6 +70,11 @@ class BaseInboundProcessing
      */
     protected $userTokenbasedloginRepository;
 
+    /**
+     * @var Lasallecms\Lasallecmstokenbasedlogin\Email\SendLoginTokenEmail;
+     */
+    protected $sendLoginTokenEmail;
+
 
     /**
      * BaseInboundProcessing constructor.
@@ -76,15 +82,18 @@ class BaseInboundProcessing
      * @param Lasallecms\Lasallecmsemail\Repositories\Email_messageRepository                 $email_messagesRespository
      * @param Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository              $email_attachmentRepository
      * @param Lasallecms\Lasallecmstokenbasedlogin\Repositories\UserTokenbasedloginRepository $userTokenbasedloginRepository
+     * @param Lasallecms\Lasallecmstokenbasedlogin\Email\SendLoginTokenEmail                  $sendLoginTokenEmail
      */
     public function __construct(
-        Email_messageRepository    $email_messageRespository,
-        Email_attachmentRepository $email_attachmentRepository,
-        UserTokenbasedloginRepository $userTokenbasedloginRepository
+        Email_messageRepository       $email_messageRespository,
+        Email_attachmentRepository    $email_attachmentRepository,
+        UserTokenbasedloginRepository $userTokenbasedloginRepository.
+        SendLoginTokenEmail           $sendLoginTokenEmail
     ) {
         $this->email_messageRespository      = $email_messageRespository;
         $this->email_attachmentRepository    = $email_attachmentRepository;
         $this->userTokenbasedloginRepository = $userTokenbasedloginRepository;
+        $this->sendLoginTokenEmail           = $sendLoginTokenEmail;
     }
 
 
