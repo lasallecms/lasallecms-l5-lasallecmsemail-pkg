@@ -62,32 +62,11 @@
 |
 */
 
-// Front end routes
-Route::group(array('prefix' => 'email'), function() {
-
-    // Standard inbound processing
-    Route::post('inboundemailstandardhandling', [
-        'as'   => 'inboundEmailMailgunController',
-        'uses' => 'inboundEmailMailgunController@inboundStandardHandling'
-    ]);
-
-    // A custom inbound processing
-    Route::post('inboundemailcustomhandling', [
-        'as'   => 'inboundEmailCustomMailgunController',
-        'uses' => 'CustomInboundEmailMailgunController@inboundCustomHandling'
-    ]);
-});
-
-// This route is for the custom inbound handling... that the uploaded pics are viewable by logged in customers
-Route::group(array('prefix' => 'customercare'), function() {
-    Route::get('displayorders', [
-        'as'   => 'FrontendCustomerCareDashboard',
-        'uses' => 'FrontendCustomerCareDashboardController@displayAllAlternatesortstring1Links'
-    ]);
-
-    Route::get('displayorderupdates/{alternatesortstring1}',
-        'FrontendCustomerCareDashboardController@displaySingleAlternatesortstring1');
-});
+// Front end routes from inbound email API's
+Route::post('email/inboundemailstandardhandling', [
+    'as'   => 'inboundEmailStandardHandling',
+    'uses' => 'InboundEmailController@inboundStandardHandling'
+]);
 
 
 // Admin routes
@@ -103,7 +82,6 @@ Route::group(array('prefix' => 'admin'), function()
 
 
 // Front end test routes
-
 Route::get('tests/inboundMailgunWebhook', [
     'as'   => 'test.inboundMailgunWebhook',
     'uses' => 'Tests\InboundMailgunWebhookTest@testViewInboundMailgunWebhook'

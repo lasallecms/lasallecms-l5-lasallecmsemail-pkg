@@ -43,8 +43,8 @@
 
                 <div class="col-md-9">
                     {!! Form::open([
-                    //'route' => 'inboundEmailMailgunController',
-                    'route' => 'inboundEmailCustomMailgunController',
+                    'route' => 'inboundEmailStandardHandling',
+                    //'route' => 'inboundEmailCustomHandling',
                     'files' => true,
                     ]) !!}
 

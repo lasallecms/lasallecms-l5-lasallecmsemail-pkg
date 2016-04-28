@@ -88,4 +88,35 @@ class Email_attachmentRepository extends BaseRepository
 
         return $emailAttachment->save();
     }
+
+    /**
+     * Get a list of "alternatesortstring1" field values by user ID
+     *
+     * @param  int          $userID
+     * @return collection
+     */
+    public function getAlternatesortstring1ByUserId($userID) {
+        return DB::table('email_messages')
+            ->join('email_attachments', 'email_messages.id', '=', 'email_attachments.email_messages_id')
+            ->select('email_attachments.alternate_sort_string1')
+            ->where('email_messages.user_id', '=', $userID)
+            ->distinct()
+            ->orderBy('email_attachments.alternate_sort_string1', 'desc')
+            ->get()
+        ;
+    }
+
+    /**
+     * Get an "email_attachment" db table record by "alternatesortstring1" field value
+     *
+     * @param  string  $alternatesortstring1
+     * @return object
+     */
+    public function getEmailAttachmentsByAlternatesortstring1($alternatesortstring1) {
+        return DB::table('email_attachments')
+            ->where('alternate_sort_string1', '=', $alternatesortstring1)
+            ->orderBy('email_messages_id', 'desc')
+            ->get()
+        ;
+    }
 }

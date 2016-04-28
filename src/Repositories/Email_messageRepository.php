@@ -107,7 +107,8 @@ class Email_messageRepository extends BaseRepository
      *
      * https://laravel.com/docs/5.1/eloquent#basic-inserts
      *
-     * @param $data
+     * @param  array  $data     Parsed and processed vars.
+     * @return mixed
      */
     public function insertNewRecord($data) {
 
@@ -139,6 +140,7 @@ class Email_messageRepository extends BaseRepository
 
         return false;
     }
+
 
     /**
      * Save the model to the database.
