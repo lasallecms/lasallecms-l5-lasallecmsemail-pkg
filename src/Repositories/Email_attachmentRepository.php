@@ -37,6 +37,10 @@ namespace Lasallecms\Lasallecmsemail\Repositories;
 use Lasallecms\Lasallecmsapi\Repositories\BaseRepository;
 use Lasallecms\Lasallecmsemail\Models\Email_attachment;
 
+// Laravel facades
+use Illuminate\Support\Facades\DB;
+
+
 /**
  * Class Email_attachmentRepository
  * @package Lasallecms\Lasallecmsemail\Repository
