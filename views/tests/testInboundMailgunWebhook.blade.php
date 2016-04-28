@@ -43,8 +43,8 @@
 
                 <div class="col-md-9">
                     {!! Form::open([
-                    'route' => 'inboundEmailStandardHandling',
-                    //'route' => 'inboundEmailCustomHandling',
+                    //'route' => 'inboundEmailStandardHandling',
+                    'route' => 'inboundEmailCustomHandling',
                     'files' => true,
                     ]) !!}
 
@@ -66,7 +66,7 @@
 
                             <input name="message-headers" type="hidden" value="X-Mailgun-Incoming and a lot of gobble-dee-gook shit">
 
-                            <input name="recipient" type="hidden" value="standard@emailtx.retroradioes.com">
+                            <input name="recipient" type="hidden" value="custom@emailtx.retroradioes.com">
 
                             <input name="signature" type="hidden" value="c02b9193c1044ccea7085230e6ba8f5357b288735d5b868e8a079791c6f4e1af">
 
