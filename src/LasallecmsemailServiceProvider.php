@@ -1,10 +1,10 @@
 <?php 
 
-namespace Lasallecrm\Lasallecrmemail;
+namespace Lasallecms\Lasallecmsemail;
 
 /**
  *
- * Email handling package for the LaSalle Customer Relationship Management package.
+ * Email handling package for the LaSalle Content Management System.
  *
  * Based on the Laravel 5 Framework.
  *
@@ -24,8 +24,8 @@ namespace Lasallecrm\Lasallecrmemail;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @package    Eail handling package for the LaSalle Customer Relationship Management package
- * @link       http://LaSalleCRM.com
+ * @package    Eail handling package for the LaSalle Content Management package
+ * @link       http://LaSalleCMS.com
  * @copyright  (c) 2015 - 2016, The South LaSalle Trading Corporation
  * @license    http://www.gnu.org/licenses/gpl-3.0.html
  * @author     The South LaSalle Trading Corporation
@@ -81,10 +81,10 @@ class LasallecrmemailServiceProvider extends ServiceProvider {
      * @return void
      */
     protected function setupConfiguration() {
-        $configuration = realpath(__DIR__.'/../config/lasallecrmemail.php');
+        $configuration = realpath(__DIR__.'/../config/lasallecmsemail.php');
 
         $this->publishes([
-            $configuration => config_path('lasallecrmemail.php'),
+            $configuration => config_path('lasallecmsemail.php'),
         ]);
     }
 

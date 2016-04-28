@@ -1,10 +1,10 @@
 <?php
 
-namespace Lasallecrm\Lasallecrmemail\Http\Controllers\Tests;
+namespace Lasallecms\Lasallecmsemail\Http\Controllers\Tests;
 
 /**
  *
- * Email handling package for the LaSalle Customer Relationship Management package.
+ * Email handling package for the LaSalle Content Management System.
  *
  * Based on the Laravel 5 Framework.
  *
@@ -24,8 +24,8 @@ namespace Lasallecrm\Lasallecrmemail\Http\Controllers\Tests;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @package    Email handling package for the LaSalle Customer Relationship Management package
- * @link       http://LaSalleCRM.com
+ * @package    Email handling package for the LaSalle Content Management System
+ * @link       http://LaSalleCMS.com
  * @copyright  (c) 2015 - 2016, The South LaSalle Trading Corporation
  * @license    http://www.gnu.org/licenses/gpl-3.0.html
  * @author     The South LaSalle Trading Corporation
@@ -53,7 +53,7 @@ use Collective\Html\FormFacade as Form;
 
 /**
  * Class InboundMailgunWebhookTest
- * @package Lasallecrm\Lasallecrmemail\Http\Controllers\Tests
+ * @package Lasallecms\Lasallecmsemail\Http\Controllers\Tests
  */
 class InboundMailgunWebhookTest extends Controller
 {

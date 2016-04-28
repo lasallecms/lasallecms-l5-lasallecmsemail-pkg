@@ -1,8 +1,8 @@
 {
-    "name": "lasallecrm/lasallecrmemail",
+    "name": "lasallecms/lasallecmsemail",
     "description": "Email handling for LaSalle Software.",
     "homepage": "http://LaSalleSoftware.com",
-    "keywords": ["laravel", "laravel5", "email", "LaSalleCRM", "LaSalleCMS", "South LaSalle", "Bob Bloom"],
+    "keywords": ["laravel", "laravel5", "email", "LaSalleCMS", "email", "South LaSalle", "Bob Bloom"],
     "license":"GPL-3.0",
     "type": "library",
     "authors": [
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lasallecrm\\Lasallecrmemail\\": "src/"
+            "Lasallecms\\Lasallecmsemail\\": "src/"
         }
     },
     "minimum-stability": "dev"

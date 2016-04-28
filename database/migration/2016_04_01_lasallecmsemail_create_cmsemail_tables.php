@@ -36,8 +36,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCrmemailTables extends Migration {
-
+class CreateCmsemailTables extends Migration
+{
     /**
      * Run the migrations.
      *

@@ -9,7 +9,7 @@ LaSalle Software email handling.
 ```
 {
     "require": {
-        "lasallecrm/lasallecrmemail": "1.*",
+        "lasallecms/lasallecmsemail": "1.*",
     }
 }
 ```
@@ -19,8 +19,8 @@ LaSalle Software email handling.
 
 In config/app.php:
 ```
-Lasallecrm\Lasallecrmemail\LasallecrmemailServiceProvider::class,
-Lasallecrm\Lasallecrmemail\LasallecrmemailEventServiceProvider::class,
+Lasallecms\Lasallecmsemail\LasallecmsemailServiceProvider::class,
+Lasallecms\Lasallecmsemail\LasallecmsemailEventServiceProvider::class,
 ```
 
 
@@ -31,7 +31,6 @@ Lasallecrm\Lasallecrmemail\LasallecrmemailEventServiceProvider::class,
 
 ## Dependencies
 * Need the usual LaSalle Software packages installed
-* INSTALL THE TO-DO PACKAGE! Uses the status lookup table from the to-do package [To-Do package](https://github.com/lasallecrm/lasallecrm-l5-todo-pkg/blob/master/database/migrations/2015_05_28_todo_create_todo_tables.php)
 
 
 ## Publish the Package's Config

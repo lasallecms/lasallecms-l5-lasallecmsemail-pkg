@@ -1,20 +1,15 @@
-# LASALLECRM EMAIL HANDLING
+# LASALLECMS EMAIL HANDLING
 
-[![Build Status](https://img.shields.io/travis/lasallecrm/lasallecrm-l5-lasallecrmemail-pkg/master.svg?style=flat-square)](https://travis-ci.org/lasallecrm/lasallecrm-l5-lasallecrmemail-pkg)
-[![Total Downloads](https://img.shields.io/packagist/dt/lasallecrm/lasallecrmemail.svg?style=flat-square)](https://packagist.org/packages/lasallecrm/lasallecrmemail)
-[![Latest Stable Version](https://poser.pugx.org/lasallecrm/lasallecrmemail/v/stable.svg)](https://packagist.org/packages/lasallecrm/lasallecrmemail)
-[![Latest Unstable Version](https://poser.pugx.org/lasallecrm/lasallecrmemail/v/unstable.svg)](https://packagist.org/packages/lasallecrm/lasallecrmemail)
-[![GitHub Issues](https://img.shields.io/github/issues/lasallecrm/lasallecrm-l5-lasallecrmemail-pkg.svg)](https://github.com/lasallecrm/lasallecrm-l5-lasallecrmemail-pkg/issues)
+[![Build Status](https://img.shields.io/travis/lasallecms/lasallecms-l5-lasallecmsemail-pkg/master.svg?style=flat-square)](https://travis-ci.org/lasallecms/lasallecms-l5-lasallecmsemail-pkg)
+[![Total Downloads](https://img.shields.io/packagist/dt/lasallecms/lasallecmsemail.svg?style=flat-square)](https://packagist.org/packages/lasallecms/lasallecmsemail)
+[![Latest Stable Version](https://poser.pugx.org/lasallecms/lasallecmsemail/v/stable.svg)](https://packagist.org/packages/lasallecms/lasallecmsemail)
+[![Latest Unstable Version](https://poser.pugx.org/lasallecms/lasallecmsemail/v/unstable.svg)](https://packagist.org/packages/lasallecms/lasallecmsemail)
+[![GitHub Issues](https://img.shields.io/github/issues/lasallecms/lasallecms-l5-lasallecmsemail-pkg.svg)](https://github.com/lasallecms/lasallecms-l5-lasallecmsemail-pkg/issues)
 [![Software License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Laravel](https://img.shields.io/badge/Laravel-v5-brightgreen.svg?style=flat-square)](http://laravel.com)
 
 
-Email handler for LaSalle Software, with heavy integration with LaSalleCRM
-
-
-## Early Development
-
-This package is in early development. 
+Email handler for LaSalle Software.
 
 
 ## Not Use Admin Form Automation

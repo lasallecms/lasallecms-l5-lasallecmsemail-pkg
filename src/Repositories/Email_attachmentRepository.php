@@ -1,10 +1,10 @@
 <?php
 
-namespace Lasallecrm\Lasallecrmemail\Repositories;
+namespace Lasallecms\Lasallecmsemail\Repositories;
 
 /**
  *
- * Email handling package for the LaSalle Customer Relationship Management package.
+ * Email handling package for the LaSalle Content Management System.
  *
  * Based on the Laravel 5 Framework.
  *
@@ -24,8 +24,8 @@ namespace Lasallecrm\Lasallecrmemail\Repositories;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @package    Email handling package for the LaSalle Customer Relationship Management package
- * @link       http://LaSalleCRM.com
+ * @package    Email handling package for the LaSalle Content Management System
+ * @link       http://LaSalleCMS.com
  * @copyright  (c) 2015 - 2016, The South LaSalle Trading Corporation
  * @license    http://www.gnu.org/licenses/gpl-3.0.html
  * @author     The South LaSalle Trading Corporation
@@ -39,7 +39,7 @@ use Lasallecrm\Lasallecrmemail\Models\Email_attachment;
 
 /**
  * Class Email_attachmentRepository
- * @package Lasallecrm\Lasallecrmemail\Repository
+ * @package Lasallecms\Lasallecmsemail\Repository
  */
 class Email_attachmentRepository extends BaseRepository
 {
