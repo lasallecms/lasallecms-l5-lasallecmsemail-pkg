@@ -292,5 +292,7 @@ class BaseInboundProcessing
         // Send Login Token email to the customer
         //-------------------------------------------------------------
         $this->sendLoginTokenEmail->sendEmail($user_id, $email);
+
+        return;
     }
 }
