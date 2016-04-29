@@ -79,7 +79,7 @@ class AdminEmailHandlingController extends AdminFormBaseController
     protected $repository;
 
     /**
-     * @var Lasallecrm\Lasallecrmemail\Repositories\Email_attachmentRepository
+     * @var Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository
      */
     protected $email_attachmentRepository;
 

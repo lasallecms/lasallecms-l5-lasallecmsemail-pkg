@@ -172,7 +172,7 @@ class Email_attachment extends BaseModel
      * @return Eloquent
      */
     public function email_message() {
-        return $this->belongsToMany('Lasallecrm\Lasallecrmemail\Models\Email_message', 'email_messages');
+        return $this->belongsToMany('Lasallecms\Lasallecmsemail\Models\Email_message', 'email_messages');
     }
 
 

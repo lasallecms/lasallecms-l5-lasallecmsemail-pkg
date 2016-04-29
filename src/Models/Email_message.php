@@ -95,7 +95,7 @@ class Email_message extends BaseModel
      *
      * @var string
      */
-    public $model_namespace = "Lasallecrm\Lasallecrmemail\Models";
+    public $model_namespace = "Lasallecms\Lasallecmsemail\Models";
 
     /**
      * Model's class.
@@ -227,7 +227,7 @@ class Email_message extends BaseModel
      * @return Eloquent
      */
     public function email_attachment() {
-        return $this->belongsToMany('Lasallecrm\Lasallecrmemail\Models\Email_attachment', 'email_attachments');
+        return $this->belongsToMany('Lasallecms\Lasallecmsemail\Models\Email_attachment', 'email_attachments');
     }
 
     /**

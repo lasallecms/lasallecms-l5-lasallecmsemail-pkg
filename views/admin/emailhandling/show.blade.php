@@ -173,7 +173,7 @@
                             <img src="{{{ Config::get('app.url') }}}/{{{ $record_attachment->attachment_path }}}/{{{ $record_attachment->attachment_filename }}}" width="150" height="auto" />
 
 
-                            {{{ Config::get('app.url') }}}/{{{ Config::get('lasallecrmemail.attachment_path') }}}/{{{ $record_attachment->attachment_filename }}}
+                            {{{ Config::get('app.url') }}}/{{{ Config::get('lasallecmsemail.attachment_path') }}}/{{{ $record_attachment->attachment_filename }}}
 
                             <br />
 

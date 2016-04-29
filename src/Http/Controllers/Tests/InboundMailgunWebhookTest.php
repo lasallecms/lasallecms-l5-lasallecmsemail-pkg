@@ -58,7 +58,7 @@ use Collective\Html\FormFacade as Form;
 class InboundMailgunWebhookTest extends Controller
 {
     /**
-     * @var Lasallecrm\Lasallecrmemail\Models\Email_message
+     * @var Lasallecms\Lasallecmsemail\Models\Email_message
      */
     protected $email_message_model;
 
