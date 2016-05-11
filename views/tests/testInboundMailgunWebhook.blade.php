@@ -43,8 +43,8 @@
 
                 <div class="col-md-9">
                     {!! Form::open([
-                    //'route' => 'inboundEmailStandardHandling',
-                    'route' => 'inboundEmailCustomHandling',
+                    'route' => 'inboundEmailStandardHandling',
+                    //'route' => 'inboundEmailCustomHandling',
                     'files' => true,
                     ]) !!}
 
@@ -76,7 +76,7 @@
 
                             <input name="token" type="hidden" value="0a080d77b986a00487f7a41c3647182f3d5f7c9bce21824340">
 
-                            <input name="attachment-count" type="hidden" value="1">
+                            <input name="attachment-count" type="hidden" value="0">
 
 
                         </td>

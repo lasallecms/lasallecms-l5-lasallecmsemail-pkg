@@ -1,9 +1,9 @@
 # CHANGE LOG
 
-## VERSION 1.2.0 - 2016-03-31
+## VERSION 1.2.0 - 2016-05-11
 
 ### All GitHub issues for this version
-* [https://github.com/bbloom/lasallecms-l5-lasallecmsemail-pkg/milestones/Version%201.2.0+is%3Aclosed](https://github.com/bbloom/lasallecms-l5-lasallecmsemail-pkg/milestones/Version%201.2.0+is%3Aclosed)
+* [https://github.com/lasallecms/lasallecms-l5-lasallecmsemail-pkg/issues?q=milestone%3A%22Version+1.2.0%22+is%3Aclosed](https://github.com/lasallecms/lasallecms-l5-lasallecmsemail-pkg/issues?q=milestone%3A%22Version+1.2.0%22+is%3Aclosed)
 
 
 
