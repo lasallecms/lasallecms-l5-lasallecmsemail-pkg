@@ -44,6 +44,9 @@ return [
     |
     | Not set up to save to S3 (or anywhere else).
     |
+    |Update: 'attachment_path' can reside under the "public" or "storage" folder,
+    |as set in lasallecmsfrontend.images_parent_folder_uploaded
+    |
     */
     'attachment_path' => 'attachments',
 

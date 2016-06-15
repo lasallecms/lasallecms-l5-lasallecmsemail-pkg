@@ -40,6 +40,8 @@ use Lasallecms\Lasallecmsemail\Repositories\Email_attachmentRepository;
 use Lasallecms\Lasallecmstokenbasedlogin\Repositories\UserTokenbasedloginRepository;
 use Lasallecms\Lasallecmstokenbasedlogin\Email\SendLoginTokenEmail;
 
+use Lasallecms\Helpers\Images\ImagesHelper;
+
 // Laravel facades
 use Illuminate\Support\Facades\Mail;
 
@@ -75,6 +77,11 @@ class BaseInboundProcessing
      */
     protected $sendLoginTokenEmail;
 
+    /**
+     * @var Lasallecms\Helpers\Images\ImagesHelper
+     */
+    protected $ImagesHelper;
+
 
     /**
      * BaseInboundProcessing constructor.
@@ -88,12 +95,14 @@ class BaseInboundProcessing
         Email_messageRepository       $email_messageRespository,
         Email_attachmentRepository    $email_attachmentRepository,
         UserTokenbasedloginRepository $userTokenbasedloginRepository,
-        SendLoginTokenEmail           $sendLoginTokenEmail
+        SendLoginTokenEmail           $sendLoginTokenEmail,
+        ImagesHelper                  $imagesHelper
     ) {
         $this->email_messageRespository      = $email_messageRespository;
         $this->email_attachmentRepository    = $email_attachmentRepository;
         $this->userTokenbasedloginRepository = $userTokenbasedloginRepository;
         $this->sendLoginTokenEmail           = $sendLoginTokenEmail;
+        $this->ImagesHelper                  = $imagesHelper;
     }
 
 
@@ -220,7 +229,7 @@ class BaseInboundProcessing
      */
     public function processAttachments($emailMessageID, $data=null) {
 
-        $attachmentPath      = public_path() . "/".config('lasallecmsemail.attachment_path')."/";
+        $attachmentPath      = $this->ImagesHelper->pathOfImagesUploadParentFolder() . "/".config('lasallecmsemail.attachment_path')."/";
 
         // INSERT into the "email_attachments" db table
         for ($i = 1; $i <= $data['number_of_attachments']; $i++) {
