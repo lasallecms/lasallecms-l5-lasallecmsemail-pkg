@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## VERSION 1.2.1 - 2016-07-19
+
+### All GitHub issues for this version
+* [https://github.com/lasallecms/lasallecms-l5-lasallecmsemail-pkg/issues?q=milestone%3A%22Version+1.2.1%22+is%3Aclosed](https://github.com/lasallecms/lasallecms-l5-lasallecmsemail-pkg/issues?q=milestone%3A%22Version+1.2.1%22+is%3Aclosed)
+
 ## VERSION 1.2.0 - 2016-05-11
 
 ### All GitHub issues for this version
