@@ -12,6 +12,9 @@
 Email handler for LaSalle Software.
 
 
+[MUST READ CAVEAT ABOUT THIS PACKAGE at https://lasallesoftware.ca/caveat_about_lasalle_software_version_one.php](https://lasallesoftware.ca/caveat_about_lasalle_software_version_one.php)
+
+
 ## Not Use Admin Form Automation
 
 Email handling is a specialized thing, so I am foregoing my own Administrative Form Automation. 
